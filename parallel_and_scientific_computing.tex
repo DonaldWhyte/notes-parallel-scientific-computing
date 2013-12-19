@@ -39,35 +39,153 @@
 % Start the paper on a new page.
 \pagebreak
 
-\section{Scientific Computing}
+\section{Introduction}
 
 Scientific Computing is the study of methods and procedures to approximate solutions to mathematical problems.Often, we \textit{have} to approximate solutions because computing the exact/optimal solution takes too long or is not possible to due machine inaccuracy. This module deals with how to use \textbf{mathematical models} to derive \textbf{numerical models} that can be then be computed/solved in parallel, across multiple machines. There are three key issues to deal with when trying to solve scientific problems -- accuracy, efficiency and reliability.
 
 \textbf{Accuracy} refers to the accuracy of the final solution and can appear in many guises:
-\begin{enumerate}
+\begin{itemize}
 	\item \textbf{Modelling Error} -- occurs when the mathematical model representing the real world problem is an approximation/simplification (e.g. assumption that the Earth is  sphere)
 	\item \textbf{Discretisation Error} -- occurs when the problem is approximated further in order to solve it numerically on a computer (cannot have true real numbers  due to memory limitations and floating point imprecision).
 	\item \textbf{Imprecise Data} -- external information being used in the simulation is incorrect, incomplete or an approximation
 	\item \textbf{Inexact Arithmetic} -- computation has increasing error due to floating point arithmetic
 	\item \textbf{Human Error} -- the human made an error in one of the stages above
-\end{enumerate}
+\end{itemize}
 
 \textbf{Efficiency} refers to number of resources required to solve the problem, whether those resources are time, memory, machines and so on. This should be be optimised in terms of the:
-\begin{enumerate}
+\begin{itemize}
 	\item number of arithmetic operations used, as well as how they grow with the problem size and how these operations can be efficiently distributed across multiple processes)
 	\item memory used
 	\item running time (time taken for the program toe execution)
-\end{enumerate}
+\end{itemize}
 
 \textbf{Reliability} is also an important factor. Ideally, a given numerical method could be applied in such a way that it guarantees:
-\begin{enumerate}
+\begin{itemize}
 	\item a given level of accuracy for \textit{any} computation
 	\item \textbf{robustness}. That is, the success/accuracy of the method does not dependant heavily on initial data and control parameters (e.g. initial iterate in Jacobi iteration
 	\item \textbf{convergence to a solution}. That is, it always works (or at least fails gracefully instead of running forever).
-	
-\end{enumerate}
+\end{itemize}
 
-TODO: Moore's law and sustaining growth
+\textbf{Moore's law} predicted that transitor density in CPUSs, thus CPU computing power, would double annually. However, transistor density has only doubled every \textit{two} years. Physical limits imposed by nature suggestr tha this will stop in the near future. Therefore, people have sought parallel programming to increase processing power and redue processing times. Parallel programming attempts to solve these problems and these issues by distributing them across multiple machines.
+
+TODO: Moore's law diagram
+
+\section{Parallel Computing}
+
+\subsection{Flynn's Classifications}
+
+Flynn's classifications refers to a classigiction for computers based on their instruction and data streams. Table \ref{tab:flynn} shows these classifications. A more detailed description is given below:
+\begin{itemize}
+	\item \textbf{SISD (Single Instruction, Single Data)} -- in a single processor computer, a single stream of instructions is generated, which operate on a single stream of data
+	\item \textbf{MIMD (Multiple Instruction, Multiple Data)} -- general-purpose multiprocessor system. Each processor has a separate program with its own instruction stream, with each stream operating on their own stream of data. 
+	\item \textbf{SIMD (Single Instruction, Multiple Data)} -- specifically designed computer system where this are multiple computer programs with the \textbf{smae} instruction stream. Each program operates on different data however, meaning data can be operated on \textbf{massively in parallel} (e.g. GPUs, Map/Reduce).
+	\item \textbf{MISD (Multiple Instruction, Single Data)} -- Single data items are piped through a \textit{sequence} of processors. By having the same instruction performance on the same data more than once, it is possible to have a fault tolerance mechanism based on redundancy (for example, if one processor crashes during the instruction, another processor would've performed the instruction).
+\end{itemize}
+
+\begin{table}
+	\centering
+	\begin{tabular}{|l|l|l|}
+		\hline
+		& \textbf{Single Instruction} & \textbf{Multiple Instruction} \\
+		\hline
+		\textbf{Single Data} & SISD & MISD \\
+		\hline
+		\textbf{Multiple Data} & SIMD & MIMD \\
+		\hline
+	\end{tabular}
+	\caption{Flynn's classifications on computer streams}
+	\label{tab:flynn}	
+\end{table}
+
+For multiple processors, the \textbf{Multiple Program - Multiple Data} structure can be used, in which each processor executes its own program. An alternative to this is \textbf{Single Program - Multiple Data (SPDM)}, where each processor executes its own copy of a single source program (said programs do have to be synchronised though).
+
+Throughout this document and in MPI, a similar structure to SPDM is used. Each processor has the same program (same code), but the \textit{behaviour} of each process can actually be specified in code (based on process IDs for example).  With this, it is possible to write different programs for each processor. However, it is more common to use a \textbf{master-worker} structure (as shown in figure \ref{fig:master-worker}). Here, the \textbf{master} is the central control point, which farms out work to each worker process and aggregates the final results.
+
+Note that SPDM is more appropriate for \textbf{static process creation}, where all processes start when the overall system starts and no new processes are added.
+
+TODO: master-worker diagram
+
+\subsection{Shared and Distributed Memory}
+
+Traditionally, a process executes a program stored in memory. Each main memory location has an address represented in $b$ bits, whose value starts at 0 and can extend $2^b - 1$. Figure \ref{fig:single-process-memory} illustrates a single process with its own private space of memory.
+
+TODO: single process memory figure
+
+There are two principal types of parallel systems. Systems with \textbf{shared memory}, where all processes share (read/write) to the same block of memory) and systems with \textbf{distributed memory}, where each process has its own private memory store and cannot directly access the other process' memory. Hybrids of the two types are possible, such as distributed-shared memory, which MPI uses. Figures \ref{fig:multi-process-shared-memory}, \ref{fig:multi-process-distributed-memory} and \ref{fig:multi-process-hybrid-memory}  show the shared, distributed and hybrid architectures respectively.
+
+TODO: shared memory diagram
+TODO: distributed memory diagram
+TODO: annotated distributed-shared memory diagrams (with my notes on the slides).
+
+There are potential issues with shared memory programming. Because each process is reading/writing to the resources, \textbf{race conditions} can occur. These are hard to find and mean that the results of your system may differ from run to run. To prevent these, you need to identify areas which cause different output if the order of processes accessing it is different, called \textbf{critical sections}, and use locks (e.g. mutual exclusion) to prevent a processing writing to data another process is reading.
+
+However, even when using locks to prevent race conditions, other problems can occur. An example of this is \textbf{deadlock}. The deadlock problem is when a set of blocked processes are each holding a resource and waiting to acquire a resource held by another process in the set. For example, a system has two disk drives. $P_1$ and $P_2$ each hold one disk drive and each needs the other one to continue. However, since the processes are constantly waiting for the other resource before releasing theirs, both processes are in a state of deadlock.
+
+These problems can be avoided by using \textbf{distributed memory}. Since each process has its own local memory, which only it can access, race conditions cannot occur. This means that if a process wants to operate on some data, that data must be stored in its local memory. What happens if process A wants to operate on data owned by another process B? Then those two process must \textbf{communicate}, with process B sending the required data to process A. 
+
+The mechanism which allows process to communicate like that is called\textbf{message passing}, and its the only way two processes can communicate. Note that this communication is typically performed over a network, which means communication can have a lot of overhead.  A good parallel system tries to minimise the communication required.
+
+\paragraph{\textbf{NOTE:}} Distributed memory is used throughout the rest of this document.
+
+\paragraph{}
+
+Each process could be connected to \textbf{every other process} in the system, but this becomes very complicated, introduces difficult bugs and means there is $n^2$ communications overhead. Common process communication architectures are shown in Figure \ref{fig:common-process-architecutres}.
+
+TODO: have a diagram with grid, hypercube and tree which are clearly labelled and has my notes on
+	
+\subsection{Parallel Performance Theory}
+
+\subsection{Definitions}
+
+TODO: variable names and stuff
+
+TODO: execution times (t\_comm, t\_comp, t\_startup, etc. what they all are)
+
+\subsubsection{Speedup}
+
+TODO: describe
+
+TODO: Amdahl's law
+
+TODO: Gustafson's law
+
+TODO: state example problem and apply speedup
+
+\subsubsection{Efficiency}
+
+TODO: use same example problem as speedup
+
+\subsubsection{Divide and Conquer}
+
+TODO: something about this?
+
+\subsubsection{Scalability and Iso-efficiency}
+
+(on lecture 8)
+
+TODO: use same example problem as speedup
+
+TODO: use another example (Jacobi?)
+
+\subsubsection{Time Complexity Analysis for Parallel Programs}
+
+TODO: summary of how to analyse time complexity of parallel programs with reference to the WORKSHEET (step-by-step)
+
+\subsection{Parallelising Sequential Operations}
+
+TODO: pipelining
+
+\subsection{Partitioning Strategies}
+
+\subsubsection{Row/Strip Decomposition}
+
+TODO: applications to major problems like heat diffusion and solving uniform linear systems
+
+\subsubsection{Block Decomposition}
+
+TODO
+
+\section{Scientific Computing}
 
 \subsection{Finite Precision Arithmetic}
 
@@ -390,60 +508,6 @@ TODO: methods of refinement
 TODO: discuss general problems
 
 TODO: DIFFUSION METHOD description, steps and examples`1
-
-\section{Parallel Computing}
-
-\subsection{Parallel Performance Theory}
-
-\subsection{Definitions}
-
-TODO: variable names and stuff
-
-TODO: execution times (t\_comm, t\_comp, t\_startup, etc. what they all are)
-
-\subsubsection{Speedup}
-
-TODO: describe
-
-TODO: Amdahl's law
-
-TODO: Gustafson's law
-
-TODO: state example problem and apply speedup
-
-\subsubsection{Efficiency}
-
-TODO: use same example problem as speedup
-
-\subsubsection{Divide and Conquer}
-
-TODO: something about this?
-
-\subsubsection{Scalability and Iso-efficiency}
-
-(on lecture 8)
-
-TODO: use same example problem as speedup
-
-TODO: use another example (Jacobi?)
-
-\subsubsection{Time Complexity Analysis for Parallel Programs}
-
-TODO: summary of how to analyse time complexity of parallel programs with reference to the WORKSHEET (step-by-step)
-
-\subsection{Parallelising Sequential Operations}
-
-TODO: pipelining
-
-\subsection{Partitioning Strategies}
-
-\subsubsection{Row/Strip Decomposition}
-
-TODO: applications to major problems like heat diffusion and solving uniform linear systems
-
-\subsubsection{Block Decomposition}
-
-TODO
 
 \section{MPI}
 
