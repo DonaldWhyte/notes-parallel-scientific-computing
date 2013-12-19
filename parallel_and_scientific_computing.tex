@@ -1,0 +1,482 @@
+%
+% Name: Parallel and Scientific Computing Module Book (2013-2014)
+% Author: Donald Whyte (sc10dw@leeds.ac.uk)
+%
+
+\documentclass{article}
+
+\usepackage[margin=2cm]{geometry} % easy page formatting
+	\geometry{letterpaper}
+\usepackage{doc} %special logo commands
+\usepackage{url} % formatting URLs
+\usepackage{datetime} % up-to-date, automatically generated times
+% For graphic files
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+% Set the title, author, and date.
+\title{Parallel and Scientific Computing \\ COMP3920}
+\author{Donald Whyte}
+\date{\today}
+
+% The document proper.
+\begin{document}
+
+% Add the title section.
+\maketitle
+
+% Add various lists on new pages.
+\pagebreak
+\tableofcontents
+
+\pagebreak
+\listoffigures
+
+\pagebreak
+\listoftables
+
+% Start the paper on a new page.
+\pagebreak
+
+\section{Scientific Computing}
+
+Scientific Computing is the study of methods and procedures to approximate solutions to mathematical problems.Often, we \textit{have} to approximate solutions because computing the exact/optimal solution takes too long or is not possible to due machine inaccuracy. This module deals with how to use \textbf{mathematical models} to derive \textbf{numerical models} that can be then be computed/solved in parallel, across multiple machines. There are three key issues to deal with when trying to solve scientific problems -- accuracy, efficiency and reliability.
+
+\textbf{Accuracy} refers to the accuracy of the final solution and can appear in many guises:
+\begin{enumerate}
+	\item \textbf{Modelling Error} -- occurs when the mathematical model representing the real world problem is an approximation/simplification (e.g. assumption that the Earth is  sphere)
+	\item \textbf{Discretisation Error} -- occurs when the problem is approximated further in order to solve it numerically on a computer (cannot have true real numbers  due to memory limitations and floating point imprecision).
+	\item \textbf{Imprecise Data} -- external information being used in the simulation is incorrect, incomplete or an approximation
+	\item \textbf{Inexact Arithmetic} -- computation has increasing error due to floating point arithmetic
+	\item \textbf{Human Error} -- the human made an error in one of the stages above
+\end{enumerate}
+
+\textbf{Efficiency} refers to number of resources required to solve the problem, whether those resources are time, memory, machines and so on. This should be be optimised in terms of the:
+\begin{enumerate}
+	\item number of arithmetic operations used, as well as how they grow with the problem size and how these operations can be efficiently distributed across multiple processes)
+	\item memory used
+	\item running time (time taken for the program toe execution)
+\end{enumerate}
+
+\textbf{Reliability} is also an important factor. Ideally, a given numerical method could be applied in such a way that it guarantees:
+\begin{enumerate}
+	\item a given level of accuracy for \textit{any} computation
+	\item \textbf{robustness}. That is, the success/accuracy of the method does not dependant heavily on initial data and control parameters (e.g. initial iterate in Jacobi iteration
+	\item \textbf{convergence to a solution}. That is, it always works (or at least fails gracefully instead of running forever).
+	
+\end{enumerate}
+
+TODO: Moore's law and sustaining growth
+
+\subsection{Finite Precision Arithmetic}
+
+TODO
+
+\subsection{Linear Algebra}
+
+\subsubsection{Matrix Addition}
+
+TODO: algorithms, complexity and how to parallelise
+
+TODO: iso-efficiency and $t_{comp}$/$t_{comm}$ if possible
+
+\subsubsection{Vector Addition}
+
+TODO
+
+\subsubsection{Matrix Multiplication}
+
+TODO
+
+\subsubsection{Matrix-Vector Multiplication}
+
+TODO
+
+\subsection{Solving Systems of Equations}
+
+\subsubsection{What are Systems of Equations?}
+
+TODO
+
+\subsubsection{Gaussian Elimination}
+
+TODO: direct method
+
+\subsubsection{Jacobi Iteration}
+
+TODO: advantages of iteration methods over direct method
+
+TODO: formulae and time complexity
+
+TODO: serial and parallel
+
+\subsubsection{Gauss-Seidel Iteration}
+
+TODO: serial and parallel
+
+\subsubsection{Lexicographic Gauss-Seidel}
+
+TODO
+
+\subsubsection{Red-Black Gauss-Seidel}
+
+TODO
+
+\subsubsection{Successive Over-Relaxation}
+
+TODO: serial and parallel (same as Gauss-Seidel)
+
+\subsubsection{Iteration Stopping Criteria}
+
+TODO: error measures (3) and tolerance
+
+TODO: matrix conditional number (residual)
+
+\subsubsection{Improving Convergence Rates}
+
+TODO: page 27 on lecture 7
+
+\subsection{Partial Differential Equations}
+
+\subsubsection{Derivatives and Approximating Derivatives}
+
+TODO: with errors and stuff  due to floating point inaccuracy (dt too small). this means finding optimal value for dt
+
+TODO: higher derivates
+
+\subsubsection{Ordinary Differential Equations}
+
+TODO
+
+\subsubsection{Partial Derivatives}
+
+TODO: what they are, maths definition and examples of application
+
+\subsubsection{Discretising Partial Differential Equations}
+
+TODO: refer to worksheet on this
+
+\subsubsection{Initial Value Problems}
+
+TIME	
+
+TODO: ODE
+
+TODO: examples of these problems, approximating them and using Euler's method
+
+TODO: stiffness
+
+\subsubsection{Boundary Value Problems}
+
+SPATIAL
+
+TODO: definition, examples of problems, approximating them using systems of equations
+
+TODO: error measurement
+
+TODO: boundary conditions
+
+TODO: refer to boundary value problems worksheet
+
+TODO: final notes from slides on it
+
+\subsubsection{Heat Diffusion}
+
+TODO: describe this steady state spatial problem
+
+TODO: Laplace and Poision equations (1d)
+
+TODO: Dirichlet boundary condition
+
+TODO: discretising the partial differential equations (finite differences)
+
+TODO: 2-space dimension and 2D poisson equation, with mesh present
+
+TODO: discretising the problem and getting a tri-diagonal matrix
+
+TODO: how diffusion smooyhs things out (due to averaging at each iteration)
+
+TODO: how to partition, how the processes and each individual node on the mesh communicate with each other, speedup, efficiency and iso-efficiency of problem of heat diffusion for both row, block and red-black partitioning
+
+\subsubsection{Initial-Boundary Value Problems}
+
+TODO:  these are not just steady-state ptoblems! These are dynamic models which have variations in time as well as space
+
+TODO: examples of these problems
+
+TODO: time-dependant heat diffusion/averaging equation
+
+TODO: advection
+
+TODO: diffusion
+
+TODO: reaction
+
+TODO: diagrams showing behaviour of the different stuff
+
+TODO: method of lines  (see paper notes on lecture 18 for this as well). This means using finite differences for spatial derivatives and explicit time-stepping with the forward Euler scheme.
+
+TODO: using upwinding for space (not central differencing) and implicit time-stepping with the backward Euler method
+
+TODO: applied example from slides
+
+TODO: Improving Implicit Methods for Time
+
+TODO: handling Multiple Space Dimensions
+
+\subsection{Sparse Systems}
+
+\subsubsection{1D Sparsity and Thomas Algorithm}
+
+TODO: 1D pattern and reducing storage
+
+TODO: Thomas algorithm for efficient Gaussian Elimination for a tridiagonal matrix
+
+\subsubsection{2D Sparsity and banded Matrices}
+
+TODO: central differencing
+
+\subsubsection{Unstructured Meshes}
+
+TODO: sparsity with unstructured meshes
+
+\subsubsection{Storing Sparse Matrices}
+
+TODO
+
+\subsubsection{Bandwidth}
+
+TODO
+
+\subsubsection{Cuthill-McKee Ordering}
+
+TODO: describe algorithm
+
+TODO: give steps
+
+TODO; give example
+
+TODO: mention fill-in
+
+\section{Meshes}
+
+TODO: what a mesh is
+
+\subsection{Structured Problems}
+
+TODO: discuss structure of grids
+
+TODO: definite regular/uniform, structured and unstructured meshes
+
+\subsection{Unstructured Problems}
+
+TODO: Talk about how you can have unstructered meshes
+
+TODO: some example screenshots
+
+TODO: discuss how you can triangulate any mesh and how it's often done
+
+TODO: finally, say how WITH UNSTRUCTURED DATA YOU CAN MO LONGER HAVE A GRID AND MULTI-DIMENSIONAL RAYS CANNOT BE USED
+
+\subsection{Mesh Representation}
+
+TODO: what the names of the stuff are 
+
+TODO: representation of unstructured meshes
+
+\subsection{Process of Solving Unstructered Meshes}
+
+TODO: list of how you load meshes in and all that other stuff and eventually solve
+
+TODO: mention some of the algorithm strategies and how you load/represent the mesh in memory
+
+(MAKE SURE TO GET LIST  FROM THE LAST PART
+
+\subsection{Mesh Generation}
+
+\subsubsection{Mesh Quality}
+
+TODO: how there are many different ways to break up an unstructured mesh and a quality measure is required
+
+TODO: mesh quality measures (two from slides)
+
+\subsubsection{Edge Swappping}
+
+TODO
+
+\subsubsection{Voronoi Tesselation}
+
+TODO: what it is
+
+\subsubsection{Dual Graphs and Delaunay Triangulation}
+
+TODO: dual graphs
+
+TODO: Delaunay triangulation
+
+\subsubsection{Point Insertion}
+
+TODO
+
+\subsubsection{Advancing Front Method}
+
+TODO
+
+\subsubsection{Algorithm Summary}
+
+Unstructured Mesh Generation Algorithm Summary
+
+TODO: grid-based approach on last slide
+
+TODO: table with list of algorithms
+
+\subsection{Mesh Partitioning}
+
+\subsubsection{Good Partition Properties}
+
+TODO: state how unstructured mesh is considered graph, partitions are subgraphs
+
+\subsection{Dual Graphs}
+
+TODO
+
+\subsubsection{Recursive Coordinate Bisection (RBC)}
+
+TODO: examples with and without edge weights
+
+\subsubsection{Recursive Graph Bisection (RGB)}
+
+TODO: examples with and without edge weights
+
+\subsubsection{Multilevel Partitioning}
+
+TODO: graph coarsening
+
+\subsubsection{Other Algorithms}
+
+TODO
+
+\subsection{Adaptive Meshes}
+
+TODO: discuss mesh resolution
+
+\subsubsection{Uniform Refinement}
+
+TODO
+
+\subsubsection{Local Mesh Refinement}
+
+TODO
+
+TODO: discuss issues with these
+
+\subsubsection{Local Error Estimation}
+
+TODO: with uniform meshes
+
+TODO: mesh patches
+
+\subsubsection{Refining Triangular Meshes}
+
+TODO: refining a single triangle
+
+TODO: overall process of refining a triangular mesh
+
+TODO: methods of refinement
+
+\subsubsection{Dynamic Load Balancing and Difussion Method}
+
+TODO: discuss general problems
+
+TODO: DIFFUSION METHOD description, steps and examples`1
+
+\section{Parallel Computing}
+
+\subsection{Parallel Performance Theory}
+
+\subsection{Definitions}
+
+TODO: variable names and stuff
+
+TODO: execution times (t\_comm, t\_comp, t\_startup, etc. what they all are)
+
+\subsubsection{Speedup}
+
+TODO: describe
+
+TODO: Amdahl's law
+
+TODO: Gustafson's law
+
+TODO: state example problem and apply speedup
+
+\subsubsection{Efficiency}
+
+TODO: use same example problem as speedup
+
+\subsubsection{Divide and Conquer}
+
+TODO: something about this?
+
+\subsubsection{Scalability and Iso-efficiency}
+
+(on lecture 8)
+
+TODO: use same example problem as speedup
+
+TODO: use another example (Jacobi?)
+
+\subsubsection{Time Complexity Analysis for Parallel Programs}
+
+TODO: summary of how to analyse time complexity of parallel programs with reference to the WORKSHEET (step-by-step)
+
+\subsection{Parallelising Sequential Operations}
+
+TODO: pipelining
+
+\subsection{Partitioning Strategies}
+
+\subsubsection{Row/Strip Decomposition}
+
+TODO: applications to major problems like heat diffusion and solving uniform linear systems
+
+\subsubsection{Block Decomposition}
+
+TODO
+
+\section{MPI}
+
+\subsection{Overview of MPI Paradigm}
+
+TODO
+
+\subsection{Sending and Receiving Messages}
+
+TODO
+
+\subsection{Synchronous and Asynchronous}
+
+TODO
+
+\subsection{Global Communication}
+
+TODO: stuff like broadcast and map/reduce
+
+\subsection{Loading Balancing}
+
+TODO
+
+\subsection{Example Parallel Problems}
+
+TODO
+
+\subsection{Building and Running MPI Programs}
+
+TODO: MPD ring and machine specification
+
+% Generate the bibliography.
+\bibliography{latex-sample}
+\bibliographystyle{unsrt}
+
+\end{document}
