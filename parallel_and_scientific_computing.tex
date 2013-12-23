@@ -48,6 +48,7 @@
 \usepackage{epstopdf}
 \usepackage{amsfonts}
 \usepackage{amsthm}
+\usepackage{pdflscape}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 % Set the title, author, and date.
@@ -552,8 +553,6 @@ An alternative to direct methods are iterative methods. Instead of trying to fin
 
 \paragraph{}
 
-TODO: advantages of iteration methods over direct method (look at notes). also summarise advantages of jacboi, gauss ansd SOR
-
 With iterative methods, the following questions are raised:
 \begin{itemize}
 	\item when does the iteration converge to a solution? Do they always converge to a solution or is there a chance the algorithm could iterate forever?
@@ -596,7 +595,13 @@ Due to the nature of the formula and how some elements require values computed f
 
 \subsubsection{Successive Over-Relaxation}
 
-TODO: serial and parallel (same as Gauss-Seidel)
+Successive Over-Relaxation is a variant of the Gauss-Seidel method which results in faster convergence. The formula for a single iteration of an element is given in Equation \ref{eq:sor}, where $g(i, k + 1)$ is an iteration $k + 1$ of Gauss-Seidel and $\omega$ is the \textbf{relaxation parameter}. $\omega$ is used to speed up or slow down the convergence. Finding an optimal value for $\omega$ (typically between 1.9 and 2) will mean that the number of iterations to converge to a specified error is drastically reduced when compared to Gauss-Seidel.
+
+\begin{multline}\\
+	g(i, k + 1) = x_i^{(k)} + \frac{1}{a_{ii}}(b_i - \sum_{j=0}^{i - 1} {a_{ij}x_{j}^{(k+1)}} - \sum_{j=i+1}^{n - 1} {a_{ij}x_{j}^{(k)}}) \\
+	x_i^{(k+1)} = (1 - \omega)x_i^{(k)} + \omega g(i, k + 1)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              \;\;\;\;\;\;\;\;\; 0 < \omega < 2 \\
+	\label{eq:sor}
+\end{multline}
 
 \subsubsection{Iteration Stopping Criteria}
 \label{sec:stopping-criteria}
@@ -655,7 +660,13 @@ Which approximation is used can greatly affect the error/inaccuracy in the resul
 
 Unfortunately, due to finite precision arithmetic being used on computers, it is not possible to just decrease $\delta x$ more and more and expect more accuracy. At some point, the differences between the numbers will be too small to be represented in floating point numbers, rounding will happen and the error will start increasing again. This is illustrated in Figure \ref{fig:derivative-approx-error}. A \textbf{balance} is sought out between inaccuracy caused by a less precise approximation (high values for $\delta x$) and inaccuracy caused by rounding error (low values for $\delta x$).
 
-TODO: derivate approx error two plots
+\begin{figure}
+	\centering
+
+	\includegraphics[scale=0.5]{figures/derivative-approx-error}
+	\caption{Error in approximation of derivative of $\sin x$}
+	\label{fig:derivative-approx-error}
+\end{figure}
 
 Approximating higher derivatives (i.e. the rate of change of a rate of change) can be achieved like so:
 \begin{equation}
@@ -831,7 +842,12 @@ The resultant system is shown in Figure \ref{fig:finite-differences-1d-system}. 
 
 Instead of just concerning one dimension, the Poisson equation can be applied to two spatial dimensions (\ref{eq:poisson-2d}). A discretised form can be derived, which results in two equations (Equation \ref{eq:poisson-2d-approx}). Instead of a uniformly split up line, the problem is now uniform 2D mesh like the one in Figure \ref{fig:2d-finite-differences-mesh}.
 
-TODO: 2d uniform mesh
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.35]{figures/2d-finite-differences-mesh.png}
+	\caption{2D Mesh for Finite Differences when $\delta x = \delta y$}
+	\label{fig:2d-finite-differences-mesh}
+\end{figure}
 
 \begin{equation}
 	\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} +  = f(x, y)
@@ -956,9 +972,7 @@ Since \textbf{explicit time-stepping} is being used, the scheme is only \textbf{
 
 As before, the initial conditions $u^0$ must be specified and Dirichlet boundary conditions can be imposed by fixing boundary values $u(X_L) = u_L$ and $u(X_R) = u_R$. 
 
-As always, these equations form a system $Ax = b$ which can be solved. Assuming $r(u) = 0$, the sparsity pattern of the matrix $A$ IBVPs \textbf{matches} the pattern of the \textbf{BVP of the steady-state} problem, which is shown in Figure \ref{fig:bvp-ibvp-sparsity} (however, the coefficients are complex in IBVPs). Each timestep requires solving the system of equations.
-
-TODO: sparsity structure diagram of BVPs and IBVPs.
+As always, these equations form a system $Ax = b$ which can be solved. Assuming $r(u) = 0$, the sparsity pattern of the matrix $A$ IBVPs \textbf{matches} the pattern of the \textbf{BVP of the steady-state problem}, which is shown in Figure \ref{fig:heat-diffusion-sparsity-structures.png} for 1D and 2D space. Tthe coefficients are more complicated in IBVPs, however. Also note that each \textbf{timestep} requires solving the system of equations.
 
 \subsection{Sparse Systems}
 
@@ -1027,9 +1041,70 @@ In fact, when the matrix structure is derived from a structured lattice, the off
 
 \subsubsection{Thomas Algorithm}
 
-The \textbf{Thomas algorithm} is an efficient implementation of Gaussian elimination for a \textbf{tri-diagnonal matrix}. Both the forward elimination and back substitution steps can be done in $O(n)$ operations each, meaning a system with a tri-diagonal sparsity structure can be solved with a direct method in $O(n)$ time).
+The \textbf{Thomas algorithm} is an efficient implementation of Gaussian elimination for a \textbf{tri-diagonal matrix}. Both the forward elimination and back substitution steps can be done in $O(n)$ operations each, meaning a system with a tri-diagonal sparsity structure can be solved with a direct method in $O(n)$ time). Like Gaussian elimination, there are two steps -- forward elimination and back substitution.
 
-TODO
+Let $n$ be the number of unknowns in the tri-diagonal system.
+
+\paragraph{\textbf{Forward Elimination}} Each row $i$ contains three coefficients next to each other, $a_i$, $b_i$ and $c_i$, \textbf{except for the first and last row}. When $i = 1$, only $b_1$ and $c_1$ are present. When $i = n$, only $a_n$ and $b_n$ are present.
+
+During forward elimination, where we start at row 1 and end row $n$, the goal at each row $i$ is to turn the matrix from this state:
+\begin{equation}
+	\left( \begin{matrix}
+	... & 0 & 1 & c''_{i - 1} & 0 & 0 & ... \\
+	... & 0 & a_i & b_i & c_i & 0 & ... \\
+	... & 0 & 0 & a_{i+1} & b_{i+1} & c_{i+1} & ...
+	\end{matrix} \right)
+	\left( \begin{matrix}
+	x_{i - 1} \\
+	x_i \\
+	x_{i + 1}
+	\end{matrix} \right)
+	=
+	\left( \begin{matrix}
+	d''_{i - 1} \\
+	d_i \\
+	d_{i+1}	z
+	\end{matrix} \right)
+\end{equation}
+into this state:
+\begin{equation}
+	\left( \begin{matrix}
+	... & 0 & 1 & c''_{i - 1} & 0 & 0 & ... \\
+	... & 0 & 0 & 1 & c''_i & 0 & ... \\
+	... & 0 & 0 & a_{i+1} & b_{i+1} & c_{i+1} & ...
+	\end{matrix} \right)
+	\left( \begin{matrix}
+	x_{i - 1} \\
+	x_i \\
+	x_{i + 1}
+	\end{matrix} \right)
+	=
+	\left( \begin{matrix}
+	d''_{i - 1} \\
+	d''_i \\
+	d_{i+1}	z
+	\end{matrix} \right)
+\end{equation}
+This is easily done since $c''_i$ and $d''_i$ can be computed like so:
+\begin{equation}
+	c''_i = \frac{c_i}{b_i - a_ic''_{i-1}}
+	\;\;\;\;\;\;\;\;\;
+	d''_i = \frac{d_i - a_i d''_{i-1}}{b_i - a_ic''_{i-1}}	
+\end{equation}
+Note that the only values $c''_i$ and $d''_i$ depend on are the new coefficients from previous row, \textbf{which you should already have}. Row 1 is a special case; the coefficient and RHS value for that row is computed like so:
+\begin{equation}
+	c''_i = \frac{c_i}{b_i}
+	\;\;\;\;\;\;\;\;\;
+	d''_i = \frac{d_i}{b_i}
+\end{equation}
+
+\paragraph{\textbf{Back Substitution}} Starting from $i = n$ and iterating backwards to $i = 1$, compute the $n$ unknowns using the new coefficients and RHS in the system ($c''_i$ and $d''_i$) like so:
+\begin{multline}\\
+	x_n = d''_i \\
+	x_i = d''_i - c''_i x_{i+1} \;\;\;\;\; i = n-1,n-2,...,1
+\\ \end{multline}
+
+The vector of unknowns $x$ is now known, thus the tri-diagonal system is solved.
 
 \subsubsection{Unstructured Meshes}
 
@@ -1051,13 +1126,26 @@ The \textbf{bandwidth} of a matrix $A$ is the minimum value of $m$ for which $a_
 
 \subsubsection{Cuthill-McKee Ordering}
 
-TODO: describe algorithm
+\textbf{Cuthill-McKee Ordering} reorders the nodes in an attempt to reduce the \textbf{bandwidth} of the matrix by moving nodes closer to the system's diagonal. It works as follows:
+\begin{enumerate}
+	\item Find a node of low (or lowest?) degree $p_0$
+	\item Let $Q$ and $R$ be \textbf{ordered lists} such that $Q = \lbrace p_0 \rbrace$ and $R = \lbrace \rbrace$
+	\item Take first node $p$ from $Q$
+	\item Put all neighbours of $p$ in list $N$ and \textbf{sort the list by degree (from lowest to highest)}
+	\item Add any nodes in the list \textbf{not in} $Q$ and $R$ to the end of $Q$
+	\item Move node $p$ from Q to the end of $R$
+	\item Repeat from \textbf{step 3} until $Q$ is empty
+\end{enumerate}
+By the end of the algorithm, $R$ is the new ordering that should reduce the bandwidth of the system's matrix. This algorithm is like \textbf{breadth-first search} where nodes on the same level are explored \textbf{in order of degree}.
 
-TODO: give steps
+The node ordering chosen for the unstructured mesh in Figure \ref{fig:unstructured-mesh-sparsity} gives the matrix a bandwidth of 9. Applying applying the Cuthill-McKee algorithm on the mesh, starting at node, the bandwidth is reduced to 5. The modified mesh is shown in Figure \ref{fig:cuthill-mckee-reordering} shows the reordered mesh/matrix and the new sparsity structure.
 
-TODO; give example
-
-TODO: mention fill-in
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.7]{figures/cuthill-mckee-reordering.png}
+	\caption{Result of Cuthill-McKee Ordering on unstructured mesh given in Figure \ref{fig:unstructured-mesh-sparsity}}
+	\label{fig:cuthill-mckee-reordering}
+\end{figure}
 
 \section{Meshes}
 
@@ -1107,11 +1195,12 @@ How many triangles a node belongs to can greatly affect the mesh's behaviour and
 \begin{figure}
 	\centering
 	\includegraphics[scale=0.4]{figures/unstructured-mesh-example.png}
-	\caption{Unstructred mesh generated from Table \ref{tab:mesh-representation}}
+	\caption{Unstructured mesh generated from Table \ref{tab:mesh-representation}}
 	\label{fig:mesh-representation}
 \end{figure}
 
 \begin{table}
+	\label{tab:mesh-representation}
 	\centering
 	\begin{tabular}{|l|l|l|l|l|l|}
 		\hline
@@ -1131,7 +1220,6 @@ How many triangles a node belongs to can greatly affect the mesh's behaviour and
 		\hline
 	\end{tabular}
 	\caption{Representation of arbitrary 2D mesh shown in Figure \ref{fig:mesh-representation}}
-	\label{tab:mesh-representation}
 \end{table}
 
 \paragraph{\textbf{NOTE:}} Always number a triangle's nodes in an \textbf{anti-clockwise} fashion. An orientation is always assumed when using existing solvers/algorithms, so it is best to be consistent . This is similar to using an anti-clockwise winding order for the faces of 3D meshes in real-time graphics.
@@ -1229,6 +1317,13 @@ The second measure outputs area divided by the sum of the length of each side, w
 
 Edges connected two nodes can be swapped to improve mesh quality. Look at the triangulation in Figure \ref{fig:edge-swapping}. The edge between $r_1$ and $r_3$ is deemed \textbf{illegal} if $\min \lbrace a, b, c, d, e, f \rbrace < \min \lbrace A, B, C, D, E,F \rbrace$.  Illegal edges should be swapped for other edges such that the mesh is still triangulated. This is because the alternative triangulation resulted in a higher quality mesh (by quality measure $Q_1$).
 
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.35]{figures/edge-swapping.png}
+	\caption{Two adjacent triangles -- should the edge connecting the wo triangles be swapped?}
+	\label{fig:edge-swapping}
+\end{figure}
+
 Steps:
 \begin{enumerate}
 	\item Pick two triangles
@@ -1238,8 +1333,6 @@ Steps:
 	\item If $\min \lbrace a, b, c, d, e, f \rbrace < \min \lbrace A, B, C, D, E,F \rbrace$, the original triangulation is \textbf{illegal}, so make the swap \textbf{permanent}.
 	\item Repeat until there are no illegal edges (swapping edges may produce new illegal edges). At this point, a \textbf{Delaunay triangulation} has been achieved.
 \end{enumerate}
-
-TODO: example edge swapping
 
 \subsubsection{Voronoi Tesselation}
 
@@ -1306,13 +1399,14 @@ Now $T'$ is a Delaunay triangulation for the set of points $P$.
 
 Figure \ref{fig:delaunay-triangulation-example} shows the process of going from a point cloud to a legal Delaunay triangulation, referencing the steps described above.
 
-TODO: make landscape!
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.35]{figures/delaunay-triangulation-example.png}
-	\caption{Illustration of the use of the Delauney Triangulation algorithm on a point cloud, with reference to the algorithm's steps}
-	\label{fig:delaunay-triangulation-example}
-\end{figure}
+\begin{landscape}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.30]{figures/delaunay-triangulation-example.png}
+		\caption{Illustration of the use of the Delauney Triangulation algorithm on a point cloud, with reference to the algorithm's steps}
+		\label{fig:delaunay-triangulation-example}
+	\end{figure}
+\end{landscape}
 
 \subsubsection{Point Insertion}
 
@@ -1325,7 +1419,6 @@ Based on the mesh quality measurements discussed, it is still possible to improv
 	\item Repeat from step 1 until the mesh is "good enough"
 \end{enumerate}
 
-TODO: make landscape!
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.35]{figures/point-insertion.png}
@@ -1590,7 +1683,12 @@ A mesh should have enough points in all parts of the domain to accurately repres
 
 \textbf{Uniform mesh refinement} is when greater detail is added to all parts of the mesh, uniformly. That is, the same amount of new points is added every. Consider the heat diffusion problem. Refining the mesh for this to include more points gives more much \textbf{smoother, detailed} approximations, as Figure \ref{fig:uniform-refinement} shows.
 
-TODO: uniform refinement
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.6]{figures/uniform-refinement.png}
+	\caption{Uniformly refining heat diffusion mesh to get greater accuracy}
+	\label{fig:uniform-refinement}
+\end{figure}
 
 Doing more work gives better approximations, but we need to decide when the approximation is "good enough". It is best to assess where doing the extra would be \textbf{most beneficial} and refine the mesh there. Uniformly refining an entire mesh adds many more nodes and is very expensive, both in terms of memory and CPU time. Often, the fine resolution is \textbf{only needed in certain regions} (not entire mesh), so those regions of interest are refined. This is known as \textbf{adaptive meshes/local mesh refinement}.
  
