@@ -7,7 +7,7 @@
 
 \usepackage[margin=2cm]{geometry} % easy page formatting
 	\geometry{letterpaper}
-\usepackage{doc} %special logo commands
+\usepackage{doc} %spec%ial logo commands
 \usepackage{url} % formatting URLs
 \usepackage{datetime} % up-to-date, automatically generated times
 \usepackage{float}
@@ -142,19 +142,44 @@ Throughout this document and in MPI, a similar structure to SPDM is used. Each p
 
 Note that SPDM is more appropriate for \textbf{static process creation}, where all processes start when the overall system starts and no new processes are added.
 
-TODO: master-worker diagram
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.3]{figures/master-worker.png}
+	\caption{Master-worker process architecture, with the master allocating work/tasks for the workers to complete}
+	\label{fig:master-worker}
+\end{figure}
 
 \subsection{Shared and Distributed Memory}
 
 Traditionally, a process executes a program stored in memory. Each main memory location has an address represented in $b$ bits, whose value starts at 0 and can extend $2^b - 1$. Figure \ref{fig:single-process-memory} illustrates a single process with its own private space of memory.
 
-TODO: single process memory figure
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.6]{figures/single-processor-memory.png}
+	\caption{Single processor with a single source of memory}
+	\label{fig:single-process-memory}
+\end{figure}
 
 There are two principal types of parallel systems. Systems with \textbf{shared memory}, where all processes share (read/write) to the same block of memory) and systems with \textbf{distributed memory}, where each process has its own private memory store and cannot directly access the other process' memory. Hybrids of the two types are possible, such as distributed-shared memory, which MPI uses. Figures \ref{fig:multi-process-shared-memory}, \ref{fig:multi-process-distributed-memory} and \ref{fig:multi-process-hybrid-memory}  show the shared, distributed and hybrid architectures respectively.
 
-TODO: shared memory diagram
-TODO: distributed memory diagram
-TODO: annotated distributed-shared memory diagrams (with my notes on the slides).
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.7]{figures/shared-memory.png}
+	\caption{Multi-process system with shared memory, where each process uses the same pool of memory}
+	\label{fig:multi-process-shared-memory}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.7]{figures/distributed-memory.png}
+	\caption{Multi-process system with distributed memory, where each process has its own local memory store}
+	\label{fig:multi-process-distributed-memory}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.7]{figures/distributed-shared-memory.png}
+	\caption{Distributed-shared memory architecture, where the memory pool \textbf{appears to be the same, shared memory} to each process, but it's actually distributed across the processes}
+	\label{fig:multi-process-hybrid-memory}
+\end{figure}
 
 There are potential issues with shared memory programming. Because each process is reading/writing to the resources, \textbf{race conditions} can occur. These are hard to find and mean that the results of your system may differ from run to run. To prevent these, you need to identify areas which cause different output if the order of processes accessing it is different, called \textbf{critical sections}, and use locks (e.g. mutual exclusion) to prevent a processing writing to data another process is reading.
 
@@ -168,9 +193,14 @@ The mechanism which allows process to communicate like that is called\textbf{mes
 
 \paragraph{}
 
-Each process could be connected to \textbf{every other process} in the system, but this becomes very complicated, introduces difficult bugs and means there is $n^2$ communications overhead. Common process communication architectures are shown in Figure \ref{fig:common-process-architecutres}.
+Each process could be connected to \textbf{every other process} in the system, but this becomes very complicated, introduces difficult bugs and means there is $n^2$ communications overhead. Common process communication architectures are shown in Figure \ref{fig:common-process-architectures}.
 
-TODO: have a diagram with grid, hypercube and tree which are clearly labelled and has my notes on
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.4]{figures/distributed-architectures.png}
+	\caption{Common Process Architectures}
+	\label{fig:common-process-architectures}
+\end{figure}
 	
 \subsection{Parallel Performance Theory}
 
@@ -355,15 +385,25 @@ It is also possible to use Gauss-Seidel in the standard way:
 
 The form of Gauss-Seidel used in Equation \ref{eq:heat-diffusion-lex-gauss} is known as \textbf{lexicographic Gauss-Seidel}. To compute the latest value for node at $(i, j)$, we use the latest values of nodes $(i - 1, j)$ and $(i, j - 1)$ and the old values (from the previous iteration $k$) of nodes $(i + 1, j)$, $(i, j + 1)$. This is because the latest values for the latter two nodes has not been computed yet.
 
-TODO: figure illustrating lexicograpghic Gauss-Seidel
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{figures/lexicographic-gauss.png}
+	\caption{Node value dependency of heat diffusion grid when lexicographic Gauss-Seidel is used. Squares are already computed values, the circle is the value currently being computed and the crosses are values yet to be computed}
+	\label{fig:lexicographic-gauss}
+\end{figure}
 
-TODO: figure illustrating red-black Gauss-Seidel
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{figures/redblack-gauss.png}
+	\caption{Node value dependency of heat diffusion grid when red-black Gauss-Seidel is used. A node is dependant on all of its neighbouring nodes.}
+	\label{fig:redblack-gauss}
+\end{figure}
 
 One problem when using lexicographic ordering for Gauss-Seidel is that as you increase the number of processes, you increase the number of iterations required to converge to a solution. This is because the \textit{boundary} values each process contains depend on newly computed values from other processes. Since those new values (used for Gauss-Seidel iteration) are not received by a process until \textit{after} the whole iteration, the current iteration uses old values where new values should have been used, which slows the convergence.
 
 \textbf{Red-black Gauss-Seidel} eliminates this problem. It takes the same number of iterations as Gauss-Seidel to converge on a single processor, but the number iterations does not increase as you add more processes like lexicographic. This overall makes the red-black ordering \textbf{more scalable} than the lexicographic ordering
 
-Each of the nodes in the regular mesh are coloured red or black in an alternating fashion, so all the neighbours of a red node are black and vice versa. This is illustrated in Figure \ref{fig:redblack-ordernig}. Iteration $(k + 1)$ works as follows:
+Each of the nodes in the regular mesh are coloured red or black in an alternating fashion, so all the neighbours of a red node are black and vice versa. This is illustrated in Figure \ref{fig:redblack-gauss}. Iteration $(k + 1)$ works as follows:
 \begin{enumerate}
 	\item Send/receive black nodes to/from neighbouring processes (values from iteration $(k)$)
 	\item Update red nodes by computing their values for $k + 1$
@@ -388,7 +428,7 @@ This section describes common strategies for partitioning a problem into work th
 
 Strip, or row, decomposition allocates \textbf{one or more contiguous rows} to each process sequentially. the allocation should try and be as even as possible so each process has roughly the same number of rows. For example, if there are 10 rows in a matrix and 5 processes, then each process is given a strip of two rows (process 1 getting rows 1 and 2, process 2 getting rows 3 and 4, etc.). This means each process gets a strip of $\frac{N - 1}{p}$ rows, where $N$ is the problem size and $p$ is the number of processors.
 
-With the heat diffusion problem, an equation for a node depends on the values of all adjacent nodes. So how does a process receive a value for a node adjacent to one on the \textbf{process boundary}? That is, how does it get the updated value of a node that is handled by another process? This is done through communication -- each process communicates with the \textbf{previous and next} processes that deal with the rows directly above and below the rows the current process deals with. A process sends the values of nodes at its boundary and receives the values of nodes on the previous/next processes' boundaries. Figure \ref{fig:heat-diffusion-strip-decomposition} illustrates the strip allocation and how processes communicate at the boundaries.
+With the heat diffusion problem, an equation for a node depends on the values of all adjacent nodes. So how does a process receive a value for a node adjacent to one on the \textbf{process boundary}? That is, how does it get the updated value of a node that is handled by another process? This is done through communication -- each process communicates with the \textbf{previous and next} processes that deal with the rows directly above and below the rows the current process deals with. A process sends the values of nodes at its boundary and receives the values of nodes on the previous/next processes' boundaries. Figure \ref{fig:strip-decomposition} illustrates the strip allocation and how processes communicate at the boundaries.
 
 One issue with this is when the number of rows (problem size) is not divisible by the number of processors, the number of rows to allocate to a process is \textit{fractional}. This is handled by computing the remainder of $\frac{N - 1}{p}$, $r = (N - 1) \mod p$. Due to the nature of the remainder, $r < p$. Therefore, simply compute the remainder and allocate $\frac{N - 1 - r}{p}$ rows to each process, giving \textbf{one extra row} to the first $r$ processes.
 
@@ -559,7 +599,7 @@ Due to the nature of the formula and how some elements require values computed f
 TODO: serial and parallel (same as Gauss-Seidel)
 
 \subsubsection{Iteration Stopping Criteria}
-\label{sec:stopping-crtieria}
+\label{sec:stopping-criteria}
 
 Potential \textbf{stopping criteria} for Jacobi iteration is \textbf{error tolerance}. When the exact solution is not known, the "error" of the solution is measured by the difference on iteration $k$ and $k+1$. If the difference between the two is sufficiently small, then we say the algorithm has \textbf{converged} on a solution and terminate.
 
@@ -582,7 +622,7 @@ where $\delta x$ is the interval between $x$ values.
 
 $u'(x)$ is known as a \textbf{first} derivative. The derivative of $u'(x)$, $u''(x)$  is a \textbf{second} derivative. An example of a derivatives is distance, speed and acceleration. Speed is the rate of change of distance and acceleration is the rate of change of speed. Therefore, speed is a first derivative and acceleration is a second derivative.
 
-Derivatives can be used to find "turning points" in function (e.g. maxima/minima), as shown in Figure \ref{fig:maxima-minima}). This is useful in optimisation.  Other forms of representing derivatives include:
+Derivatives can be used to find "turning points" in function (e.g. maxima/minima). This is useful in optimisation.  Other forms of representing derivatives include:
 \begin{equation}\\
 	\lim_{\delta x \rightarrow \infty} \frac{u(x) - u(x - \delta x)}{\delta x}
 	\label{eq:derivative2}
@@ -614,6 +654,8 @@ Equations \ref{eq:derivative1-approx}, \ref{eq:derivative2-approx} and \ref{eq:d
 Which approximation is used can greatly affect the error/inaccuracy in the result. For example, the error when approximating equation $u(x) = 1 + 5x^2 - 6x^4$ with its derivative $u'(x) = 10x - 24x^3$ is $O(\delta x)$ for the one-sided difference and $O(\delta x^2)$ for the central difference. Central differences is better in this case, because $\delta x < 1$, meaning $O(\delta x^2)$ results in a lower error than $O(\delta x)$.
 
 Unfortunately, due to finite precision arithmetic being used on computers, it is not possible to just decrease $\delta x$ more and more and expect more accuracy. At some point, the differences between the numbers will be too small to be represented in floating point numbers, rounding will happen and the error will start increasing again. This is illustrated in Figure \ref{fig:derivative-approx-error}. A \textbf{balance} is sought out between inaccuracy caused by a less precise approximation (high values for $\delta x$) and inaccuracy caused by rounding error (low values for $\delta x$).
+
+TODO: derivate approx error two plots
 
 Approximating higher derivatives (i.e. the rate of change of a rate of change) can be achieved like so:
 \begin{equation}
@@ -689,7 +731,12 @@ The \textbf{backward Euler method} is an implicit method where the error is \tex
 
 A \textbf{boundary value problem} is used when you know the values of two points and you want to find out/approximate what is going on between those two points. This could be knowing the value of $u$ at times $t_1$ and $t_2$, or knowing the value of two points $(0, 0)$ and $(5, 2)$ and computing the values of the points in-between. Figure \ref{fig:ivp-bvp-comparison} illustrates the difference between IVPs and BVPs.
 
-TODO: graphs similar to the ones on my slide nodes to show diff between BVP AND IVP
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.3]{figures/ivp-bvp-comparison.png}
+	\caption{Difference between the domain of IVPs and BVPs}
+	\label{fig:ivp-bvp-comparison}
+\end{figure}
 
 BVPs take the form the ODE shown in Equation \ref{eq:bvp}, where $u(x_L) = u_L$ and $u(x_R) = u_R$. The goal is typically to find the value of $u$ at some point $x_i$ is desired, where $x_i > X_L \land x_i < X_R$.
 
@@ -704,7 +751,7 @@ BVPs usually model systems in which the value of interest varies in space. For t
 	\item Potential energy due to gravitational forces
 \end{itemize}
 
-Equation \ref{eq:bvp-approx} is the \textbf{Poisson equation}, which approximates BVPs, where $x = x_i$, $x \pm \delta x = x_{i \pm 1}$. Figure \ref{fig:bvp-approx} illustrates the computation of intermediate values between two boundary values. This approximation leads to Equation \ref{eq:bvp-approx-FINAL}, which must be solved for $i \in \mathbb{N} \land i > L \land i < R$. Note how this equation uses \textbf{central differences}.
+Equation \ref{eq:bvp-approx} is the \textbf{Poisson equation}, which approximates BVPs, where $x = x_i$, $x \pm \delta x = x_{i \pm 1}$. This approximation leads to Equation \ref{eq:bvp-approx-final}, which must be solved for $i \in \mathbb{N} \land i > L \land i < R$. Note how this equation uses \textbf{central differences}.
 
 \begin{equation}
 	\frac{u(x + \delta x) - 2u(x) + u(x - \delta x)}{\delta x^2} \approx f(X)
@@ -780,9 +827,11 @@ To approximate these values on a computer, the problem must be discretised. \tex
 	\label{eq:finite-differences-1d-node}
 \end{equation}
 
-The resultant system is shown in Equation \ref{eq:finite-differences-1d-system}. This is a \textbf{tridiagonal matrix} which can be solved quickly using Gaussian Elimination (since the forward elimination step is not required). The equations at each end need to be different, due to the \textbf{Dirichlet boundary condition}.
+The resultant system is shown in Figure \ref{fig:finite-differences-1d-system}. This is a \textbf{tridiagonal matrix} which can be solved quickly using Gaussian Elimination (since the forward elimination step is not required). The equations at each end need to be different, due to the \textbf{Dirichlet boundary condition}.
 
 Instead of just concerning one dimension, the Poisson equation can be applied to two spatial dimensions (\ref{eq:poisson-2d}). A discretised form can be derived, which results in two equations (Equation \ref{eq:poisson-2d-approx}). Instead of a uniformly split up line, the problem is now uniform 2D mesh like the one in Figure \ref{fig:2d-finite-differences-mesh}.
+
+TODO: 2d uniform mesh
 
 \begin{equation}
 	\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} +  = f(x, y)
@@ -842,7 +891,12 @@ In its own general form, IBVPs which vary in \textbf{one spatial dimension} $x$ 
 \end{itemize}
 Figure \ref{fig:advection-diffusion-behaviour} shows the behaviour of the model as $\lambda$ and $\epsilon$ are changed. Changing $\lambda$ changes the position of the situation in the spatial domain and changing $\epsilon$ determines how much the behaviour is smoothed out.
 
-TODO: diagrams showing behaviour of the different stuff (slide 10)
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.4]{figures/ibvp-behaviour.png}
+	\caption{Behaviour of the simulation as advection $\lambda$ and diffusion $\epsilon$ are modified}
+	\label{fig:advection-diffusion-behaviour}
+\end{figure}
 
 \paragraph{\textbf{NOTE:}} Leaving the time-derivative out from any of theese equations leave \textbf{steady-state equations} that are related to BVPs. For example, if you left the time derivative out of the diffusion equation, then it would represent the heat diffusion BVP.
 \paragraph{}
@@ -1154,7 +1208,7 @@ Unstructured meshes can be \textbf{constructed from a point cloud} like the one 
 	\centering
 	\includegraphics[scale=0.35]{figures/mesh-quality-example.png}
 	\caption{Two ways of constructing mesh from point cloud}
-	\label{fig:unstructered-mesh-construction}
+	\label{fig:unstructured-mesh-construction}
 \end{figure}
 
 Equations \ref{eq:mesh-quality-1} and \ref{eq:mesh-quality-2} are two quality measures often used when assessing meshes. Higher values mean better quality meshes. Equilateral triangles are generally best, so these measures allow you to try and \textbf{maximise} the smallest angle in the mesh and/or \textbf{minimise} the largest.
@@ -1185,6 +1239,8 @@ Steps:
 	\item Repeat until there are no illegal edges (swapping edges may produce new illegal edges). At this point, a \textbf{Delaunay triangulation} has been achieved.
 \end{enumerate}
 
+TODO: example edge swapping
+
 \subsubsection{Voronoi Tesselation}
 
 \textbf{Voronoi tessellation} divides the mesh area into regions using lines that are \textbf{equidistant from pairs of points}. Doing this produces a Voronoi diagram, like the one shown in Figure \ref{fig:voronoi-tesselation} for the mesh $S = \lbrace r_1, r_2 \rbrace$.
@@ -1193,7 +1249,7 @@ Steps:
 	\centering
 	\includegraphics[scale=0.35]{figures/voronoi-basic-diagram.png}
 	\caption{Voronoi diagram of $S = \lbrace 1, 2 \rbrace$}
-	\label{fig:unstructered-mesh-construction}
+	\label{fig:voronoi-tesselation}
 \end{figure}
 
 A \textbf{Voronoi cell} $V(r_i)$ is the region containing mesh vertex $r_i$. A \textbf{Voronoi vertex} $v_p$ is equidistant from the three nearest nodes $r_i$, $r_j$ and $r_k$. The circle centred at $v_p$, which touches $r_i$, $r_j$ and $r_k$ on the edge of the circle, must contain \textbf{no other nodes}. These vertices are at the points where three region edges intersect, or at the boundary of the regions. Figure \ref{fig:voronoi-vertex} shows the construction of a single Voronoi vertex from a mesh with three points, with each component of the diagram labelled. Figure \ref{fig:voronoi-diagram} shows an entire Voronoi diagram, illustrating how the circles centred at Vorionoi vertices only contain the three mesh vertices used to construct said Voronoi vertex.
@@ -1250,7 +1306,13 @@ Now $T'$ is a Delaunay triangulation for the set of points $P$.
 
 Figure \ref{fig:delaunay-triangulation-example} shows the process of going from a point cloud to a legal Delaunay triangulation, referencing the steps described above.
 
-TODO: big figure listing all steps, with captions from slides to the right of the step and reference to numbered step in algorithm description
+TODO: make landscape!
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{figures/delaunay-triangulation-example.png}
+	\caption{Illustration of the use of the Delauney Triangulation algorithm on a point cloud, with reference to the algorithm's steps}
+	\label{fig:delaunay-triangulation-example}
+\end{figure}
 
 \subsubsection{Point Insertion}
 
@@ -1263,8 +1325,13 @@ Based on the mesh quality measurements discussed, it is still possible to improv
 	\item Repeat from step 1 until the mesh is "good enough"
 \end{enumerate}
 
-TODO: figure showing each step, with the caption of each step to the right of it and reference to the steps above
-
+TODO: make landscape!
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{figures/point-insertion.png}
+	\caption{Illustration of point insertion to improve an existing Delaunay triangulation}
+	\label{fig:point-insertion-example}
+\end{figure}
 Each step of this algorithm is $O(n)$, apart from finding the triangle that the added point falls within. The information required to perfect the steps can be found in $O(n\log n)$, which is the same complexity as forming the Voronoi tessellation.
 
 \subsubsection{Advancing Front Method}
@@ -1284,10 +1351,15 @@ One such algorithm is the \textbf{Advancing Front Method}, which is a reasonably
 	\end{enumerate}
 	\item Add triangle $u,v,m$ to $G$, which means adding nodes $u$ and $v$ to $V$ and edges $uv$, $vm$, $mu$ to $E$
 	\item Remove edge $e$ and add edges $um$ and $mv$ to $F$
-	\item Repeat from \textbf{step 2} until the front 
+	\item Repeat from \textbf{step 3} until the front 
 \end{enumerate}
 
-TODO: figure showing an example, captions on right of images and references to steps
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{figures/advancing-front-example.png}
+	\caption{Example of using Advancing Front to generate triangulated mesh, given only the mesh's discretised boundary}
+	\label{fig:advancing-front-example}
+\end{figure}
 
 \subsubsection{Grid-based Triangulation}
 
@@ -1343,14 +1415,19 @@ These two partitioning strategies cannot be used out of the box for unstructured
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=0.3]{figures/lake-superior.png}
+	\includegraphics[scale=0.4]{figures/lake-superior.png}
 	\caption{Illustration of good and bad partitioning of a non-trivial mesh (mesh based on Lake Superior)}
-	\label{fig:lake-superior}
+	\label{fig:unstructured-mesh-partition-example}
 \end{figure}
 
-Here, meshes will be considered \textbf{graphs}. Given $p$ processes, the goal is to divide the graph into $p$ \textbf{sub-graphs of equal size}, in order to provide equal load balance. The edges passing from one sub-graph to another should be \textbf{minimised}. The \textbf{cut-weight} $W$ of a partition is the \textbf{number of edges connecting different partitions} andi s used to estimate the communication costs.
+Here, meshes will be considered \textbf{graphs}. Given $p$ processes, the goal is to divide the graph into $p$ \textbf{sub-graphs of equal size}, in order to provide equal load balance. The edges passing from one sub-graph to another should be \textbf{minimised}. The \textbf{cut-weight} $W$ of a partition is the \textbf{number of edges connecting different partitions} and is used to estimate the communication costs. Figure \ref{fig:example-cut} shows an example of a cut with a cut-weight of 1.
 
-TODO: figure from slides that I made showing example of cut-weights
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.35]{figures/example-cut.png}
+	\caption{Example cut which partitions workload between two processors}
+	\label{fig:example-cut}
+\end{figure}
 
 \subsubsection{Recursive Coordinate Bisection (RBC)}
 
@@ -1364,7 +1441,12 @@ This algorithm partitions a mesh based on the \textbf{geometric location} of nod
 	\item Repeat from \textbf{step 1} on \textbf{each sub-graph} until the number of partitions matches the number of processors $p$
 \end{enumerate}
 
-TODO: example from slides, referencing and following steps given above
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.35]{figures/rcb-example.png}
+	\caption{RCB used to partition mesh into 4 sub-graphs for 4 processors}
+	\label{fig:rcb-example}
+\end{figure}
 
 The example in Figure \ref{fig:rcb-example} is an example of partitioning a mesh into 4 sub-graphs. It performs the following stages:
 \begin{enumerate}
@@ -1372,11 +1454,12 @@ The example in Figure \ref{fig:rcb-example} is an example of partitioning a mesh
 	\item The next cut is on the left sub-graph. The $y$-axis is the axis with the longest range and once again the cut is placed at the median of the sorted nodes. It is labelled (b) on the diagram and has a cut-eight of 4.
 	\item Finally, the next cut is on the right-subgraph. The $x$-axis is the axis with the longest range, so the cut is placed at the median of the nodes sorted by their $x$ value. It is labelled (c) on the diagram and has a cut-eight of 3.
 \end{enumerate}
+
 The \textbf{total cut-weight} for this partition is $5 + 4 + 3 = 12$, as there are three cuts which cut through 5, 4 and 3 edges respectively.
 
 \subsubsection{Recursive Graph Bisection (RGB)}
 
-Unlike RCB, \textbf{Recursive Graph Bisection (RGB)} ignores the geometric positions of the nodes and looks more at the graph properties. Distance is the \textbf{number of edges between nodes} here, not geometric distance. Its steps are:
+Unlike RCB, \textbf{Recursive Graph Bisection (RGB)} ignores the geometric positions of the nodes and looks at the graph properties. Distance is the \textbf{number of edges between nodes} here, not geometric distance. Its steps are:
 \begin{enumerate}
 	\item Find two extreme nodes $u,v$ with are the further apart in terms of edges (have the \textbf{maximum number of edges between them})
 	\item Choose one of these nodes, call it $u'$ and sort the remaining nodes in \textbf{ascending order of graph distance} from $u'$
@@ -1385,9 +1468,21 @@ Unlike RCB, \textbf{Recursive Graph Bisection (RGB)} ignores the geometric posit
 	\item Repeat from \textbf{step 1} on \textbf{each sub-graph} until the number of partitions matches the number of processors $p$
 \end{enumerate}
 
-TODO: example from slides, using annotiations I've addded to slides
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.35]{figures/rgb-example.png}
+	\caption{RGB used to partition mesh into 4 sub-graphs for 4 processors}
+	\label{fig:rgb-example}
+\end{figure}
 
 Figure \ref{fig:rgb-example} illustrates RGB applied to the same example graph as RCB, Notice how here, the total cut-weight is 17, and not 12. RCB has produced a better partition in this case. This is not always the case, however, as the example graph in Figure \ref{fig:rcb-rgb-example-graph} shows.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.35]{figures/rcb-rgb-example-graph.png}
+	\caption{RCB and RGB used to partition the mesh. Notice how RGB produces the better partition this time by having a lower cut-weight}
+	\label{fig:rcb-rgb-example-graph}
+\end{figure}
 
 Suppose we knew the cost of the \textbf{work associated with each node} and the cost of nodes $u$ and $v$ \textbf{communicating} (that is, the cost of communicating depends on the two processes). We could add those costs as \textbf{vertex edge weights} on the graph. RGB could still be used, but instead of trying to get an equal number of nodes on each process and minimising the number of cut edges, the focus becomes:
 \begin{enumerate}
@@ -1395,9 +1490,28 @@ Suppose we knew the cost of the \textbf{work associated with each node} and the 
 	\item \textbf{minimising} the total cut-weight, which is the sum of the weights of all edges on each cut
 \end{enumerate}
 
-TODO: example from the slides with annotations
+Figure \ref{fig:weighted-mesh} shows an example of such a weighted mesh. Figure \ref{fig:weighted-mesh-rgb-example} shows how the RGB algorithm can be used to partition such a graph to get equal load and low communication costs, with respect to the weights. Figure \ref{fig:weighted-mesh-rgb-example-processor-graph} shows the inter-processor graph resulting from the RGB partition, where the nodes are processes with weights that indicate the amount of work that process is doing and the edge weights represent the communication overhead of two processors talking to each other.
 
-TODO: inter-processor graph!
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.6]{figures/weighted-mesh.png}
+	\caption{Mesh where vertex weights indicate the amount of work at that node and edge weights indicate the communication overhead between the two endpoints}
+	\label{fig:weighted-mesh}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.4]{figures/weighted-mesh-rgb-example.png}
+	\caption{RGB algorithm applied to weighted mesh to create four subgraphs to give to four processors}
+	\label{fig:weighted-mesh-rgb-example}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35==7]{figures/weighted-mesh-rgb-example-processor-graph.png}
+	\caption{Resulting inter-processor graph from partitioning work to four processors using RGB in Figure \ref{fig:weighted-mesh-rgb-example}}
+	\label{fig:weighted-mesh-rgb-example-processor-graph}
+\end{figure}
 
 \subsubsection{Multilevel Partitioning}
 
@@ -1407,7 +1521,12 @@ Let $G = (V, E)$ be a graph. \textbf{Graph coarsening} is when you make the grap
 	\item for each edge $e = uv \in M$, merge vertices $u$ and $v$ into a single vertex $w$. All of $u$ and $v$'s neighbours are now neighbours of $w$
 \end{enumerate}
 
-TODO: basic graph coarseing example
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{figures/graph-coarsen-example.png}
+	\caption{Example of graph coarsening with vertex and edge weights}
+	\label{fig:graph-coarsen-example}
+\end{figure}
 
 \textbf{Multilevel Partitioning} is a more sophisticated partitioning method for a weighted graph $G$. Steps:
 \begin{enumerate}
@@ -1471,6 +1590,8 @@ A mesh should have enough points in all parts of the domain to accurately repres
 
 \textbf{Uniform mesh refinement} is when greater detail is added to all parts of the mesh, uniformly. That is, the same amount of new points is added every. Consider the heat diffusion problem. Refining the mesh for this to include more points gives more much \textbf{smoother, detailed} approximations, as Figure \ref{fig:uniform-refinement} shows.
 
+TODO: uniform refinement
+
 Doing more work gives better approximations, but we need to decide when the approximation is "good enough". It is best to assess where doing the extra would be \textbf{most beneficial} and refine the mesh there. Uniformly refining an entire mesh adds many more nodes and is very expensive, both in terms of memory and CPU time. Often, the fine resolution is \textbf{only needed in certain regions} (not entire mesh), so those regions of interest are refined. This is known as \textbf{adaptive meshes/local mesh refinement}.
  
 Using adaptive meshes allows the desired level of accuracy to be obtained with \textbf{less work and memory}. However, some of the simplicity of structured meshes is lost when are refined adaptively. Figure \ref{fig:local-refinement-structured-mesh} shows a structured mesh being refined in a specific region, producing a \textbf{non-uniform} structured mesh. Not only has this \textbf{lost some of the simplicity} that made structured meshes easier to implement and compute (e.g. uniform grid structure where indices tell you what nodes are adjacent), but it also \textbf{added work that wasn't desired}. To add detail to the centre of the mesh has mean more points have had to be added elsewhere, so the structure is retained.
@@ -1504,14 +1625,12 @@ This is similar to how you would split a square into four squares.
 	\label{fig:isolated-triangle-refinement}
 \end{figure}
 
-Refining a whole triangular mesh requires all little more care, however. Refining single triangles creates \textbf{hanging nodes} (see Section \ref{sec:structured-unstructured-problems}) in the overall mesh. \textbf{Red-green refinement} deals with hanging nodes, but then extra care needs to be made to ensure \textbf{mesh quality} is preserved. Figure \ref{fig:red-green-refinement} shows a detailed example of red-green refinement. The key take-out is that running such a procedure results in a refined mesh which:
+Refining a whole triangular mesh requires all little more care, however. Refining single triangles creates \textbf{hanging nodes} (see Section \ref{sec:structured-unstructured-problems}) in the overall mesh. \textbf{Red-green refinement} deals with hanging nodes, but then extra care needs to be made to ensure \textbf{mesh quality} is preserved. Such a process is very long-winded and will not be covered in detail here. The key take-out is that running such red-green refinement results in a refined mesh which:
 \begin{itemize}
 	\item has no hanging nodes
 	\item has no adjoining "green" triangles
 	\item has required a lot of bookkeeping to construct, meaning such a procedure is difficult to implement and expensive to compute
 \end{itemize}
-
-TODO: figure showing overall process of refining mesh
 
 There are three standard approaches to improving the accuracy of the approximation by refining the mesh:
 \begin{itemize}
@@ -1590,27 +1709,27 @@ Multiplying the two values together and \textbf{rounding to the largest integer 
 \end{multline}
 This means that one "work item" will be moved from node 2 to 1 (-1 for $1 \iff 2$), one will be moved from node 3 to 1, seven will be moved from node 4 to 1, 1 will be moved from node 2 to 3 and 5 will be moved from 4 to 3.
 
-Figure \ref{fig:diffussion-method-example2} shows iteration one in action, with the first graph being the work moving to/from node 1, the second graph being the work moving to/from nodes 2 and 3 and the final graph being the work on each process after the iteration. Figure \ref{fig:diffussion-method-example3} shows another two iterations, at which point the algorithm \textbf{terminates} because it has converged to an equal load balance.
+Figure \ref{fig:diffusion-method-example2} shows iteration one in action, with the first graph being the work moving to/from node 1, the second graph being the work moving to/from nodes 2 and 3 and the final graph being the work on each process after the iteration. Figure \ref{fig:diffusion-method-example3} shows another two iterations, at which point the algorithm \textbf{terminates} because it has converged to an equal load balance.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{figures/diffusion-method-example1.png}
 	\caption{Mesh with existing partition across four processes}
-	\label{fig:diffussion-method-example}
+	\label{fig:diffusion-method-example}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{figures/diffusion-method-example2.png}
 	\caption{Iteration 1 of diffusion method}
-	\label{fig:diffussion-method-example2}
+	\label{fig:diffusion-method-example2}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{figures/diffusion-method-example3.png}
 	\caption{Iterations 2 and 3 of diffusion method, showing convergence}
-	\label{fig:diffussion-method-example3}
+	\label{fig:diffusion-method-example3}
 \end{figure}
 
 \section{MPI}
@@ -1698,13 +1817,23 @@ However, this synchronisation mechanism introduces overhead and can slow the cod
 
 \textbf{Locally blocking} communication means that data is stored in a separate buffer and then sent to the target process. This is done so that the send function can return before it's actually been received by the target process, but means it's safe to write to the memory area that was sent. This is because the data to send has been copied to a local buffer before being sent (as illustrated in Figure \ref{fig:local-comm-buffer})
 
-TODO: local comm buffer diagram
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.35]{figures/mpi-local-buffer.png}
+	\caption{Locally-Blocking Communication Between Two Processors in MPI (blocks until data to send is in local buffer so original data is safe to modify)}
+	\label{fig:local-comm-buffer}
+\end{figure}
 
 \paragraph{\textbf{NOTE:}} Locally blocking receive operations simply wait until the message as been received, similar to completely synchronous receives.
 
 \textbf{Non-blocking communication} means that the send and receive functions return \textit{immediately}, even if the data has been successfully sent from, or received to, the local buffer. This is shown in Figure \ref{fig:non-block-comm}. Therefore, the local buffer may not even be safe to read as it may not have the correct data in. Additionally, it is not safe to write to since the process be overwriting data that hasn't actually been sent to the other process yet. Therefore, it is up to the programmer to ensure that this isn't a problem!
 
-TODO: non-blocking send diagram
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.35]{figures/mpi-notblocking-send.png}
+	\caption{Non-Blocking Communication Between Two Processors in MPI}
+	\label{fig:non-block-comm}
+\end{figure}
 
 Finally, greater synchronisation can be achieved by explicitly checking for the completion of a particular operation, using the following functions:
 \paragraph{ \texttt{MPI\_Wait(request, status)}} -- \textbf{blocks} until the operation indicated by \texttt{request} is completed before returning control
