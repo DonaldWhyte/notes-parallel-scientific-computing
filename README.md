@@ -52,3 +52,7 @@ Simply run `make` or `make all` to build all test programs and documents.
 
 TODO
 
+### Acknowledgements
+
+Credit to University of Leeds and Matthew Hubbard for doing a great job
+teaching me the fundamentals of parallel scientific computation.
