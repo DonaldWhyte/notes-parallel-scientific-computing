@@ -43,7 +43,7 @@
   stringstyle=\color{mymauve},     % string literal style
   tabsize=2,                       % sets default tabsize to 2 spaces
   title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
-}	
+}
 \usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{amsfonts}
@@ -76,7 +76,7 @@
 
 \section{Introduction}
 
-Scientific Computing is the study of methods and procedures to approximate solutions to mathematical problems.Often, we \textit{have} to approximate solutions because computing the exact/optimal solution takes too long or is not possible to due machine inaccuracy. This module deals with how to use \textbf{mathematical models} to derive \textbf{numerical models} that can be then be computed/solved in parallel, across multiple machines. There are three key issues to deal with when trying to solve scientific problems -- accuracy, efficiency and reliability.
+Scientific Computing is the study of methods and procedures to approximate solutions to mathematical problems. Often, we \textit{have} to approximate solutions because computing the exact/optimal solution takes too long or is not possible to due machine inaccuracy. This module deals with how to use \textbf{mathematical models} to derive \textbf{numerical models} that can be then be computed/solved in parallel, across multiple machines. There are three key issues to deal with when trying to solve scientific problems -- accuracy, efficiency and reliability.
 
 \textbf{Accuracy} refers to the accuracy of the final solution and can appear in many guises:
 \begin{itemize}
@@ -117,7 +117,7 @@ Scientific Computing is the study of methods and procedures to approximate solut
 Flynn's classifications refers to a classigiction for computers based on their instruction and data streams. Table \ref{tab:flynn} shows these classifications. A more detailed description is given below:
 \begin{itemize}
 	\item \textbf{SISD (Single Instruction, Single Data)} -- in a single processor computer, a single stream of instructions is generated, which operate on a single stream of data
-	\item \textbf{MIMD (Multiple Instruction, Multiple Data)} -- general-purpose multiprocessor system. Each processor has a separate program with its own instruction stream, with each stream operating on their own stream of data. 
+	\item \textbf{MIMD (Multiple Instruction, Multiple Data)} -- general-purpose multiprocessor system. Each processor has a separate program with its own instruction stream, with each stream operating on their own stream of data.
 	\item \textbf{SIMD (Single Instruction, Multiple Data)} -- specifically designed computer system where this are multiple computer programs with the \textbf{smae} instruction stream. Each program operates on different data however, meaning data can be operated on \textbf{massively in parallel} (e.g. GPUs, Map/Reduce).
 	\item \textbf{MISD (Multiple Instruction, Single Data)} -- Single data items are piped through a \textit{sequence} of processors. By having the same instruction performance on the same data more than once, it is possible to have a fault tolerance mechanism based on redundancy (for example, if one processor crashes during the instruction, another processor would've performed the instruction).
 \end{itemize}
@@ -134,7 +134,7 @@ Flynn's classifications refers to a classigiction for computers based on their i
 		\hline
 	\end{tabular}
 	\caption{Flynn's classifications on computer streams}
-	\label{tab:flynn}	
+	\label{tab:flynn}
 \end{table}
 
 For multiple processors, the \textbf{Multiple Program - Multiple Data} structure can be used, in which each processor executes its own program. An alternative to this is \textbf{Single Program - Multiple Data (SPDM)}, where each processor executes its own copy of a single source program (said programs do have to be synchronised though).
@@ -186,7 +186,7 @@ There are potential issues with shared memory programming. Because each process 
 
 However, even when using locks to prevent race conditions, other problems can occur. An example of this is \textbf{deadlock}. The deadlock problem is when a set of blocked processes are each holding a resource and waiting to acquire a resource held by another process in the set. For example, a system has two disk drives. $P_1$ and $P_2$ each hold one disk drive and each needs the other one to continue. However, since the processes are constantly waiting for the other resource before releasing theirs, both processes are in a state of deadlock.
 
-These problems can be avoided by using \textbf{distributed memory}. Since each process has its own local memory, which only it can access, race conditions cannot occur. This means that if a process wants to operate on some data, that data must be stored in its local memory. What happens if process A wants to operate on data owned by another process B? Then those two process must \textbf{communicate}, with process B sending the required data to process A. 
+These problems can be avoided by using \textbf{distributed memory}. Since each process has its own local memory, which only it can access, race conditions cannot occur. This means that if a process wants to operate on some data, that data must be stored in its local memory. What happens if process A wants to operate on data owned by another process B? Then those two process must \textbf{communicate}, with process B sending the required data to process A.
 
 The mechanism which allows process to communicate like that is called\textbf{message passing}, and its the only way two processes can communicate. Note that this communication is typically performed over a network, which means communication can have a lot of overhead.  A good parallel system tries to minimise the communication required.
 
@@ -202,7 +202,7 @@ Each process could be connected to \textbf{every other process} in the system, b
 	\caption{Common Process Architectures}
 	\label{fig:common-process-architectures}
 \end{figure}
-	
+
 \subsection{Parallel Performance Theory}
 
 \subsection{Execution Time Analysis}
@@ -227,7 +227,7 @@ $t_s$ is simply the number of operations performed by the algorithm, relative to
 
 Equation \ref{eq:parallel-exec-time} gives a formula for parallel execution time, where $t_{comm}$ is the overall time processes spend communicating between each other and $t_{comp}$ is the overall time spent computing. For the theoretical analysis, it is assumed all processes \textbf{operate at the same speed}.
 
-$t_{comp}$ typically depends on $n$ and $p$. When analysing computation time, always use the worst case (similar to time complexity), by analysing the most complex process. 
+$t_{comp}$ typically depends on $n$ and $p$. When analysing computation time, always use the worst case (similar to time complexity), by analysing the most complex process.
 
 $t_{comm}$ depends on the number of messages passed and the size of each message. It also depends on the interconnection structure of the processes and the mode of transfer (e.g. network connection, piped file, etc.). Equation \ref{eq:time-comm-formula} gives a formula for communication time for a single message, where $t_{startup}$ is a constant that represents \textbf{message latency} (overhead), $t_{data}$ is a constant that represents the transmission time for a single data item and $m$ is the number of data items sent in the message.
 
@@ -242,7 +242,7 @@ $t_{comm}$ depends on the number of messages passed and the size of each message
 
 \paragraph{\textbf{ANALYSIS}} Each process, including the master, adds its $\frac{n}{p}$ numbers concurrently with the other processes. This means each processor performs ($\frac{n}{p} - 1$) additions. Let $t_{comp1} = (\frac{n}{p} - 1)$ be the running time for this.
 
-The master process receives its partial sums back from all of the other processes, making $t_comm = (p - 1)(t_{startup} + t_{data})$. 
+The master process receives its partial sums back from all of the other processes, making $t_comm = (p - 1)(t_{startup} + t_{data})$.
 
 Finally, the master adds all the partial sums, which takes $t_{comp2} = p - 1$ operations.
 
@@ -448,7 +448,7 @@ $t_{comp} = \frac{4n^2}{p}$, since the same amount of work is performed as the s
 To find the isoefficiency, we can divide $E(p)$ by the highest power on the numerator. Dividing $E(p)$ by $4n^2$ gives us:
 \begin{equation}
 	E(p) = \frac{1}{1 + \frac{p}{n^2}(t_{startup} + t_{data}} = \frac{1}{1 + \frac{p}{n^2}t_{startup} + \frac{p}{n}t_{data}}
-	\label {eq:row-decomp-heat-isoefficiency}	
+	\label {eq:row-decomp-heat-isoefficiency}
 \end{equation}
 So the isoefficiency of heat diffusion with row decomposition is $n \propto p$. It is \textbf{not} $n^2 \propto p$ because $\frac{p}{n}$ in the denominator is actually the highest value for $p$, since $\frac{p}{n^2}$ would result in a smaller number.
 
@@ -513,8 +513,8 @@ This means block decomposition has different iso-efficiency, hence different sca
 	\hline
 	\textbf{Operation} & \textbf{Complexity} & \textbf{Partitioning Strategy} \\
 	\hline
-	\textbf{Vector Addition} & $O(n)$ & Strip partitioning. Split the vector into $\frac{n}{p}$ chunks and send off to $p$ processes\\	
-	\textbf{Vector Dot/Scalar Product} & $O(n)$ & Strip partitioning. Split the vector into $\frac{n}{p}$ chunks and send off to $p$ processes\\	
+	\textbf{Vector Addition} & $O(n)$ & Strip partitioning. Split the vector into $\frac{n}{p}$ chunks and send off to $p$ processes\\
+	\textbf{Vector Dot/Scalar Product} & $O(n)$ & Strip partitioning. Split the vector into $\frac{n}{p}$ chunks and send off to $p$ processes\\
 	\textbf{Matrix Addition} & $O(n^2)$ & Block partitioning. Split matrix into $\frac{n}{p}$ sub-matrices and send off to $p$ processes \\
 	\textbf{Matrix Multiplication} & $O(n^3)$ & Block partitioning. Split $n \times n$ matrix into $s^2$ $(\frac{n}{s} \times \frac{n}{s})$ sub-matrices and send off to $p$ processes. Note that $\sqrt{p}$ should be an integer. \\
 	\textbf{Gaussian Elimination (Forward Elimination Step)} & $O(n^2)$ &  Pipelining of processes could be used in a similar way as the back substitution, with cyclic decomposition used to distributed work more evenly, since the bottom rows are more work than the top (opposite of back substitution). \\
@@ -639,7 +639,7 @@ Derivatives can be used to find "turning points" in function (e.g. maxima/minima
 
 For smooth functions, all three definitions will lead to precisely the same derivatives. However, each of them lead to a \textbf{different} way of \textbf{approximating/discretising} a derivative (each approximation has different properties).
 
-To approximate derivatives, $\delta x$ is given a fixed value with is greater than 0, instead of taking the limit as $\delta x \rightarrow 0$. This evaluates the slope of a \textit{nearby chord}, instead of the slope exactly at $x$. 
+To approximate derivatives, $\delta x$ is given a fixed value with is greater than 0, instead of taking the limit as $\delta x \rightarrow 0$. This evaluates the slope of a \textit{nearby chord}, instead of the slope exactly at $x$.
 
 Equations \ref{eq:derivative1-approx}, \ref{eq:derivative2-approx} and \ref{eq:derivative3-approx} are the approximations of the derivative using the represents in Equations \ref{eq:derivative1}, \ref{eq:derivative2} and \ref{eq:derivative3} respectively. The symmetric form used in  \ref{eq:derivative3-approx} is known as \textbf{central differencing}. Equations \ref{eq:derivative1-approx}  and \ref{eq:derivative2-approx}  bias the approximation to one side or the other.
 
@@ -713,7 +713,7 @@ Examples of ODE IVPs:
 	\item Bio-medical systems which try to simulate different parts of the body (like neural activity or tumour growth)
 \end{itemize}
 
-The value $u$ varies over time $t$, so IVPs are approximated by giving a \textbf{fixed time interval} $\delta t$, and using Equation \ref{eq:ode-ivp-approx}. 
+The value $u$ varies over time $t$, so IVPs are approximated by giving a \textbf{fixed time interval} $\delta t$, and using Equation \ref{eq:ode-ivp-approx}.
 
 \begin{equation}
 	\frac{u(t + \delta t) - u(t)}{\delta t} \approx f(t, u(t))
@@ -730,7 +730,7 @@ The \textbf{forward Euler method}, shown in Equation \ref{eq:ode-ivp-forward-eul
 The forward Euler approach is explicit, as $u^{n+1}$ can be written explicitly in terms of \textbf{known quantities}. This means that is simply and computationally cheap, but is a price to pay for the simplicity. The disadvantages of the Forward Euler method are:
 \begin{itemize}
 	\item \textbf{First order accurate} -- when $\delta t$ is halved the error at time $t$ is halved ($O(\delta t)$. More sophisticated approaches exist where the order of accuracy si higher
-	\item \textbf{Conditionally stable} -- it only provides sensible results if a small enough value is used for $\delta t$. The error does not increase proportional as you use larger time steps. Instead, it is 
+	\item \textbf{Conditionally stable} -- it only provides sensible results if a small enough value is used for $\delta t$. The error does not increase proportional as you use larger time steps. Instead, it is
 \end{itemize}
 
 The \textbf{backward Euler method} is an implicit method where the error is \textbf{bounded} (unconditionally stable). The error is still in $O(\delta t)$, but allows large time steps to be used while still getting sensible results. This method requires more work per timestep than forward Euler, but you can use large timesteps (and typically less timesteps are required to reach a certain level of error). Additionally, with this method we can \textbf{look as far into the future as we want} without having to worry about it becoming unbounded and giving nonsensical results.
@@ -772,8 +772,8 @@ Equation \ref{eq:bvp-approx} is the \textbf{Poisson equation}, which approximate
 \begin{equation}
 	\frac{u_{i+1} - 2u_i + u_{i - 1}}{\delta x^2} = f(x_i)
 	\implies
-	u_{i+1} - 2u_i + u_{i - 1} = \delta x^2 f(x_i) 
-	\;\;\;\;\;\;\;\; \forall 
+	u_{i+1} - 2u_i + u_{i - 1} = \delta x^2 f(x_i)
+	\;\;\;\;\;\;\;\; \forall
 	i \in \mathbb{N} \land i > L \land i < R
 	\label{eq:bvp-approx-final}
 \end{equation}
@@ -813,7 +813,7 @@ If temperature does not change as time progress, then the problem represents a \
 	\label{eq:laplace}
 \end{equation}
 
-Other sources/sinks of heat can be added to the physical body. If this is the case, then the \textbf{Poisson Equation} shown in Equation \ref{eq:poisson} is used. 
+Other sources/sinks of heat can be added to the physical body. If this is the case, then the \textbf{Poisson Equation} shown in Equation \ref{eq:poisson} is used.
 
 \begin{equation}
 	\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} + \frac{\partial^2 u}{\partial z^2} = f(x, y, z)
@@ -830,10 +830,10 @@ To approximate these values on a computer, the problem must be discretised. \tex
 \end{figure}
 
 \begin{equation}
-	{\left( \frac{\partial^2 u}{\partial x^2}\right)}_i \approx \frac{u_{i+1} - 2u_i + u_{i - 1}}{\delta x^2} 
+	{\left( \frac{\partial^2 u}{\partial x^2}\right)}_i \approx \frac{u_{i+1} - 2u_i + u_{i - 1}}{\delta x^2}
 	\implies
 	u_{i - 1} - 2u_i + u{i + 1} = \delta x^2 f(x_i)
-	\;\;\;\;\;\;\;\; \forall 
+	\;\;\;\;\;\;\;\; \forall
 	i \in \lbrace 1, 2, ..., N - 1 \rbrace
 	\label{eq:finite-differences-1d-node}
 \end{equation}
@@ -857,14 +857,14 @@ Instead of just concerning one dimension, the Poisson equation can be applied to
 
 \begin{equation}
 	{\left( \frac{\partial^2 u}{\partial x^2} \right)}_{i,j} \approx \frac{u_{i + 1,j} - 2u_{i,j} + u_{i - 1,j} }{\delta x^2}
-	\;\;\;\;\;\;\;\;\;\; 
-	{\left( \frac{\partial^2 u}{\partial y^2} \right)}_{i,j} \approx \frac{u_{i,j+1} - 2u_{i,j} + u_{i,j-1} }{\delta y^2}	
+	\;\;\;\;\;\;\;\;\;\;
+	{\left( \frac{\partial^2 u}{\partial y^2} \right)}_{i,j} \approx \frac{u_{i,j+1} - 2u_{i,j} + u_{i,j-1} }{\delta y^2}
 	\label{eq:poisson-2d-approx}
 \end{equation}
 
 If the interval between each node is the same for both the X and Y dimensions ($\delta x = \delta y = h$), then an even simpler form that uses a single equation can be used:
 \begin{equation}
-	f(\vec{x}_{i,j}) = \frac{u_{i + 1,j} - 2u_{i,j} + u_{i - 1,j} }{\delta x^2} + \frac{u_{i,j+1} - 2u_{i,j} + u_{i,j-1} }{\delta y^2}	
+	f(\vec{x}_{i,j}) = \frac{u_{i + 1,j} - 2u_{i,j} + u_{i - 1,j} }{\delta x^2} + \frac{u_{i,j+1} - 2u_{i,j} + u_{i,j-1} }{\delta y^2}
 	\label{eq:poisson-2d-approx-uniform}
 \end{equation}
 
@@ -956,7 +956,7 @@ Since \textbf{explicit time-stepping} is being used, the scheme is only \textbf{
 \begin{multline}\\
 	{\left( \frac{\partial u}{\partial x} \right)}_i \approx \frac{u_i - u_{i - 1}}{\delta x} \;\;\;\;\; when \;\; \lambda \geq 0 \\
 	{\left( \frac{\partial u}{\partial x} \right)}_i \approx \frac{u_{i+1} - u_{i}}{\delta x} \;\;\;\;\; when \;\; \lambda < 0 \\
-	\label{eq:ibvpupwinding-discretisation} 
+	\label{eq:ibvpupwinding-discretisation}
 \\ \end{multline}
 
 \begin{multline}\\
@@ -970,7 +970,7 @@ Since \textbf{explicit time-stepping} is being used, the scheme is only \textbf{
 	\label{eq:ivbp-approx-final2}
 \end{equation}
 
-As before, the initial conditions $u^0$ must be specified and Dirichlet boundary conditions can be imposed by fixing boundary values $u(X_L) = u_L$ and $u(X_R) = u_R$. 
+As before, the initial conditions $u^0$ must be specified and Dirichlet boundary conditions can be imposed by fixing boundary values $u(X_L) = u_L$ and $u(X_R) = u_R$.
 
 As always, these equations form a system $Ax = b$ which can be solved. Assuming $r(u) = 0$, the sparsity pattern of the matrix $A$ IBVPs \textbf{matches} the pattern of the \textbf{BVP of the steady-state problem}, which is shown in Figure \ref{fig:heat-diffusion-sparsity-structures.png} for 1D and 2D space. Tthe coefficients are more complicated in IBVPs, however. Also note that each \textbf{timestep} requires solving the system of equations.
 
@@ -1089,7 +1089,7 @@ This is easily done since $c''_i$ and $d''_i$ can be computed like so:
 \begin{equation}
 	c''_i = \frac{c_i}{b_i - a_ic''_{i-1}}
 	\;\;\;\;\;\;\;\;\;
-	d''_i = \frac{d_i - a_i d''_{i-1}}{b_i - a_ic''_{i-1}}	
+	d''_i = \frac{d_i - a_i d''_{i-1}}{b_i - a_ic''_{i-1}}
 \end{equation}
 Note that the only values $c''_i$ and $d''_i$ depend on are the new coefficients from previous row, \textbf{which you should already have}. Row 1 is a special case; the coefficient and RHS value for that row is computed like so:
 \begin{equation}
@@ -1206,7 +1206,7 @@ How many triangles a node belongs to can greatly affect the mesh's behaviour and
 		\hline
 		\multicolumn{3}{|c|}{\textbf{List of Nodes}} & \multicolumn{3}{|c|}{\textbf{Triangles}} \\
 		\hline
-		\multicolumn{3}{|l|}{9} & \multicolumn{3}{|l|}{8} \\		
+		\multicolumn{3}{|l|}{9} & \multicolumn{3}{|l|}{8} \\
 		\hline
 		1) & 0.3 & 0.4 & 8 & 4 & 1 \\
 		2) & 0.1 & 0.4 & 4 & 6 & 9 \\
@@ -1444,7 +1444,7 @@ One such algorithm is the \textbf{Advancing Front Method}, which is a reasonably
 	\end{enumerate}
 	\item Add triangle $u,v,m$ to $G$, which means adding nodes $u$ and $v$ to $V$ and edges $uv$, $vm$, $mu$ to $E$
 	\item Remove edge $e$ and add edges $um$ and $mv$ to $F$
-	\item Repeat from \textbf{step 3} until the front 
+	\item Repeat from \textbf{step 3} until the front
 \end{enumerate}
 
 \begin{figure}[H]
@@ -1476,7 +1476,7 @@ This does result in \textbf{poor triangulation at the boundaries}, as this appro
 \begin{table}[H]
 	\centering
 	\begin{tabular}{|p{4cm}|p{4cm}|p{4cm}|p{4cm}|}
-		\hline	
+		\hline
 		\textbf{Name} & \textbf{Input} & \textbf{Idea} & \textbf{Advantages/Disadvantages} \\
 		\hline
 		Edge Swapping & Existing triangulated mesh $T$ & Swap edge of two triangles if a different edges results in a better triangulation (by mesh quality measure $Q_1$) & Fast to do, but can cause issues as swapping an edge may result in more illegal edges (so the algorithm can sometimes take a very long time). \\
@@ -1485,7 +1485,7 @@ This does result in \textbf{poor triangulation at the boundaries}, as this appro
 		Point Intersection & Existing Delaunay trinagulation $DT$  & Improve existing Delauney-style triangulation by selecting poor triangles and breaking them down in three more triangles. Process repeated until the mesh is "good enough" based on some quality measure & Good for steadily improving triangulation from a rough initial one. Can leave algorithm as long as necessary. \\
 		Advancing Front Method & Set of nodes $V$ and edges $E$ which define an initial boundary ($d(v) \leq 2 \;\;\; \forall v \in V$) & Slowly construct triangles \textbf{and vertices} of the mesh by slowly advancing from a pre-defined boundary & Doesn't require user to specify the internal points of the mesh, giving the algorithm more freedom to construct good triangulations (could even have tweakable granularity/level of detail for all or parts of the mesh). \\
 		Grid-Based Triangulation & Discrete or continuous boundary & Overlay a geometric shape with a grid, triangulate the grid and then alter the boundary of the grid until it matches the boundary of the given geometric shape. & Results in poor triangulation at boundaries, but very to execute. \\
-		\hline		
+		\hline
 	\end{tabular}
 	\caption{Summary of Unstructured Mesh Generation Algorithms (all output triangulated meshes)}
 \end{table}
@@ -1649,13 +1649,13 @@ Figure \ref{fig:multilevel-partitioning-idea} illustrates how you go from a larg
 \begin{table}[H]
 	\centering
 	\begin{tabular}{|p{4.5cm}|p{6cm}|p{5.5cm}|}
-		\hline	
+		\hline
 		\textbf{Name} & \textbf{Idea} & \textbf{Advantages/Disadvantages} \\
 		\hline
 		Recursive Coordinate Bisection (RCB) & Find axis with largest range of values and split graph into two sub-graphs using a cut perpendicular to the found axis, such that the number of nodes on either side the cut is roughly equal. Repeat recursively for sub-graphs. & After the first cut, RCB can be done in \textbf{parallel}, with each sub-graph being sent off to another process. RCB does not take \textbf{how many edges will be cut} when deciding where to cut, which causes problems if the mesh is \textbf{non-uniform}. See Figure \ref{fig:rcb-issue} \\
 		Recursive Graph Bisection (RGB) &  Find two nodes that are further apart from each other by edge distance/total edge weight. Pick one of those nodes and sort all other nodes by their distances to chosen node. find median and use that as the cut to get roughly the same number of nodes on each sub-graph. Repeat recursively for sub-graphs. & Robust to issues caused by non-uniform meshes, unlike RCB. Because RGB considers the graph form of the mesh (and not the geometric), the algorithm can still be used to find a partition with equal load and minimised communication costs, even if each node has a different amount of work and communication overhead to different nodes (they become vertex and edge weights on the graph). \\
 		Multi-level Partitioning & Repeatedly simplify/coarsen graph, apply partition algorithm to smaller graph and then repeatedly expand smaller graph back to the larger, original one, maintaining the original partition. & Good for very large graphs, as finding a partition using the normal algorithms may take a very long time. Complex to implement. \\
-		\hline		
+		\hline
 	\end{tabular}
 	\caption{Summary of Unstructured Mesh Partitioning Algorithms}
 \end{table}
@@ -1691,7 +1691,7 @@ A mesh should have enough points in all parts of the domain to accurately repres
 \end{figure}
 
 Doing more work gives better approximations, but we need to decide when the approximation is "good enough". It is best to assess where doing the extra would be \textbf{most beneficial} and refine the mesh there. Uniformly refining an entire mesh adds many more nodes and is very expensive, both in terms of memory and CPU time. Often, the fine resolution is \textbf{only needed in certain regions} (not entire mesh), so those regions of interest are refined. This is known as \textbf{adaptive meshes/local mesh refinement}.
- 
+
 Using adaptive meshes allows the desired level of accuracy to be obtained with \textbf{less work and memory}. However, some of the simplicity of structured meshes is lost when are refined adaptively. Figure \ref{fig:local-refinement-structured-mesh} shows a structured mesh being refined in a specific region, producing a \textbf{non-uniform} structured mesh. Not only has this \textbf{lost some of the simplicity} that made structured meshes easier to implement and compute (e.g. uniform grid structure where indices tell you what nodes are adjacent), but it also \textbf{added work that wasn't desired}. To add detail to the centre of the mesh has mean more points have had to be added elsewhere, so the structure is retained.
 
 \begin{figure}
@@ -1745,7 +1745,7 @@ When local adaptation is carried out in a parallel computation, the work per pro
 
 There are two forms of dynamic loading balancing:
 \begin{itemize}
-	\item \textbf{Repartitioning} -- this performs a new static load balance by fully partitioning the adapted mesh. This is very expensive to perform, and doesn't guarantee that the right data will be retained in the right processors, meaning that a restart of the simulation may be required. 
+	\item \textbf{Repartitioning} -- this performs a new static load balance by fully partitioning the adapted mesh. This is very expensive to perform, and doesn't guarantee that the right data will be retained in the right processors, meaning that a restart of the simulation may be required.
 	\item \textbf{Data Migration} -- this adjusts the current partition by shifting data between neighbouring processors. This requires a way to determine what data to move, how much of it and where to move it to.
 \end{itemize}
 
@@ -1779,7 +1779,7 @@ Let $G = (V, E)$ be a \textbf{subdomain graph}, in which the nodes represent pro
 	 		\begin{enumerate}
 	 			\item calculate the \textbf{load difference} between $i$ and $j$, $d_{ij} = (l_i^{(k)} - l_j^{(k)})$
 	 			\item calculate the coefficient $c_{ij} = \frac{1}{\max (degree(i), degree(j)) + 1}$
-	 		\end{enumerate}	 		
+	 		\end{enumerate}
 	 	\item update total load on vertex $i$ after exchanges with $l_i^{(k+1)} = l_i^{(k)} - \sum_j {c_{ij}d_{ij}}$
 	 \end{enumerate}
 \end{enumerate}
@@ -1864,12 +1864,12 @@ int main(int argc, char** argv)
 	MPI\_Init( &argc, &argv );
 	MPI\_Comm\_size( MPI\_COMM\_WORLD, &noprocs );
 	MPI\_Comm\_rank( MPI\_COMM\_WORLD, &nid );
-	
+
 	if (nid == 0)
 		master();
 	else
-		worker();	
-	
+		worker();
+
 	MPI\_Finalize();
 	return 0;
 }
@@ -1967,7 +1967,7 @@ When gathering multiple messages, it is often required to carry out arithmetic o
 \paragraph{} \texttt{MPI\_Reduce(sendbuf, recvbuf, count, recvtype, op, root, comm)}
 \paragraph{}
 
-This command performs the same operation on all of the data items returned and stores the aggregate result in a single value. \texttt{op} is the operation to perform; example values include \texttt{MPI\_MAX}, \texttt{MPI\_MIN}, \texttt{MPI\_SUM} and \texttt{MPI\_PROD}.		
+This command performs the same operation on all of the data items returned and stores the aggregate result in a single value. \texttt{op} is the operation to perform; example values include \texttt{MPI\_MAX}, \texttt{MPI\_MIN}, \texttt{MPI\_SUM} and \texttt{MPI\_PROD}.
 
 \subsubsection{Many-to-Many}
 
