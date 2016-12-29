@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Compute speedups factors for ROW decomposition
+python compute_speedup.py task3_row_n61.data task3_row_speedup_n61.data
+python compute_speedup.py task3_row_n121.data task3_row_speedup_n121.data
+python compute_speedup.py task3_row_n241.data task3_row_speedup_n241.data
+python compute_speedup.py task3_row_n481.data task3_row_speedup_n481.data
+python compute_speedup.py task3_row_n961.data task3_row_speedup_n961.data
+python compute_speedup.py task3_row_n1921.data task3_row_speedup_n1921.data
+# Compute efficiency factors for ROW decomposition
+python compute_efficiency.py task3_row_n61.data task3_row_efficiency_n61.data
+python compute_efficiency.py task3_row_n121.data task3_row_efficiency_n121.data
+python compute_efficiency.py task3_row_n241.data task3_row_efficiency_n241.data
+python compute_efficiency.py task3_row_n481.data task3_row_efficiency_n481.data
+python compute_efficiency.py task3_row_n961.data task3_row_efficiency_n961.data
+python compute_efficiency.py task3_row_n1921.data task3_row_efficiency_n1921.data
+
+# Compute speedups factors for BLOCK decomposition
+python compute_speedup.py task3_block_n61.data task3_block_speedup_n61.data
+python compute_speedup.py task3_block_n121.data task3_block_speedup_n121.data
+python compute_speedup.py task3_block_n241.data task3_block_speedup_n241.data
+python compute_speedup.py task3_block_n481.data task3_block_speedup_n481.data
+python compute_speedup.py task3_block_n961.data task3_block_speedup_n961.data
+python compute_speedup.py task3_block_n1921.data task3_block_speedup_n1921.data
+# Compute efficiency factors for BLOCK decomposition
+python compute_efficiency.py task3_block_n61.data task3_block_efficiency_n61.data
+python compute_efficiency.py task3_block_n121.data task3_block_efficiency_n121.data
+python compute_efficiency.py task3_block_n241.data task3_block_efficiency_n241.data
+python compute_efficiency.py task3_block_n481.data task3_block_efficiency_n481.data
+python compute_efficiency.py task3_block_n961.data task3_block_efficiency_n961.data
+python compute_efficiency.py task3_block_n1921.data task3_block_efficiency_n1921.data
+
+# Plot speedup and efficiency factors
+gnuplot task3_speedups.plot
+gnuplot task3_efficiencies.plot
