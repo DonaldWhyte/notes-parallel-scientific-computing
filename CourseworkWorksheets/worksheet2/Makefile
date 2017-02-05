@@ -14,6 +14,7 @@ run: build
 	mpiexec --machinefile $(HOSTFILE) -n $(NUM_NODES) $(PROGNAME)
 
 clean:
-	@rm -f $(PROGNAME) *.o
+	@rm -f *.o parallel_scalar_product serial_scalar_product vector_addition \
+		vector_addition_remainder
 
 .PHONY: clean run

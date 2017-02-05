@@ -14,4 +14,10 @@ clean:
 	$(MAKE) -C worksheet1 clean
 	$(MAKE) -C worksheet2 clean
 
-.PHONY: clean
+docs:
+	$(MAKE) -C coursework2 docs
+
+clean-docs:
+	$(MAKE) -C coursework2 clean-docs
+
+.PHONY: clean clean-docs

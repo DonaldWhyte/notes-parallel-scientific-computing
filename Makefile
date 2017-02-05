@@ -20,8 +20,10 @@ docs:
 	    pdflatex $(DOC_NAME).tex ; \
 	fi;
 	@pdflatex $(DOC_NAME).tex
+	$(MAKE) -C CourseworkWorksheets docs
 
 clean-docs:
 	@rm -f *.pdf *.aux *.lof *.log *.lot *.fls *.out *.toc *.fmt *.fot *.cb *.cb2
+	$(MAKE) -C CourseworkWorksheets clean-docs
 
 .PHONY: clean clean-programs clean-docs
