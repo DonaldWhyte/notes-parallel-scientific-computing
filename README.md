@@ -27,7 +27,7 @@ pdflatex. [**This document**](https://en.wikibooks.org/wiki/LaTeX/Installation)
 explains how to install LaTeX on Windows, Mac OS X and various Linux
 distributions.
 
-Afterwards, navigate into the cloned and execute the build script:
+Afterwards, navigate into the cloned repository and execute the build script:
 
 ```
 cd notes-parallel-scientific-computing
